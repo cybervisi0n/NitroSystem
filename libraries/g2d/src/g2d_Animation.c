@@ -150,6 +150,14 @@ static NNS_G2D_INLINE void SequenceEdgeHandleCommon_ (NNSG2dAnimController * pAn
         (*pAnimCtrl->callbackFunctor.pFunc)(pAnimCtrl->callbackFunctor.param, pAnimCtrl->currentTime);
     }
 
+    #ifdef SDK_PORT
+    if( pAnimCtrl->pCurrent->frames == 0 || pAnimCtrl->pActiveCurrent->frames == 0 )
+    {
+        NNS_G2dStopAnimCtrl( pAnimCtrl );
+        return;
+    }
+    #endif
+
     if ( !IsLoopAnimSequence_(pAnimCtrl)) {
         NNS_G2dStopAnimCtrl(pAnimCtrl);
     } else {

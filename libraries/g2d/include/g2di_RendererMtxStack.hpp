@@ -42,22 +42,34 @@ static BOOL NNSi_G2dIsRndCurrentMtxSRTransformed(void);
 static void RestoreRndMtxStackStateNotSR_(void);
 static void CheckIfRndCurrentMtxIsSRTransformed_(void);
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void RestoreRndMtxStackStateNotSR_ (void)
 {
     firstSRTransformedMtxIdx_ = G2Di_RENDERER_MTX_SR_NONE;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNSi_G2dInitRndMtxStack (void)
 {
     stackPos_ = 0;
     RestoreRndMtxStackStateNotSR_();
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNSi_G2dSetRndMtxStackSRTransformEnableFlag (BOOL bEnable)
 {
     bDonotUseSRTransform = !bEnable;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNSi_G2dSetRndMtxStackSRTransformed (void)
 {
     NNS_G2D_ASSERTMSG(firstSRTransformedMtxIdx_ ==  G2Di_RENDERER_MTX_SR_NONE,
@@ -69,12 +81,18 @@ NNS_G2D_INLINE void NNSi_G2dSetRndMtxStackSRTransformed (void)
     firstSRTransformedMtxIdx_ = NNSi_G2dGetMtxStackPos();
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE BOOL NNSi_G2dIsRndCurrentMtxSRTransformed (void)
 {
     return (BOOL)(!bDonotUseSRTransform &&
                   firstSRTransformedMtxIdx_ != G2Di_RENDERER_MTX_SR_NONE);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void CheckIfRndCurrentMtxIsSRTransformed_ (void)
 {
     if (NNSi_G2dIsRndCurrentMtxSRTransformed()) {
@@ -91,16 +109,25 @@ NNS_G2D_INLINE void CheckIfRndCurrentMtxIsSRTransformed_ (void)
     }
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE BOOL NNSi_G2dIsStackEmpty (void)
 {
     return (BOOL)(stackPos_ <= 0);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE BOOL NNSi_G2dStackHasEnoughCapacity (void)
 {
     return (BOOL)(stackPos_ + 1 < NNS_G2D_MAXLENGTH_OF_2DMTXSTACK);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNSi_G2dMtxPush (void)
 {
     if (NNSi_G2dStackHasEnoughCapacity()) {
@@ -122,6 +149,9 @@ NNS_G2D_INLINE void NNSi_G2dMtxPush (void)
     }
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNSi_G2dMtxPop (void)
 {
     if (!NNSi_G2dIsStackEmpty()) {
@@ -140,6 +170,9 @@ NNS_G2D_INLINE void NNSi_G2dMtxPop (void)
     }
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNSi_G2dTranslate (fx32 x, fx32 y, fx32 z)
 {
     if (bDonotUseSRTransform) {
@@ -158,6 +191,9 @@ NNS_G2D_INLINE void NNSi_G2dTranslate (fx32 x, fx32 y, fx32 z)
 
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNSi_G2dSetTrans (fx32 x, fx32 y, fx32 z)
 {
     mtxStack_[stackPos_]._20 = x;
@@ -170,6 +206,9 @@ NNS_G2D_INLINE void NNSi_G2dSetTrans (fx32 x, fx32 y, fx32 z)
     fxZStack_[stackPos_] = z;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNSi_G2dRotate (fx32 sin, fx32 cos)
 {
     NNS_G2D_ASSERTMSG(!bDonotUseSRTransform,
@@ -184,6 +223,9 @@ NNS_G2D_INLINE void NNSi_G2dRotate (fx32 sin, fx32 cos)
     }
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNSi_G2dScale (fx32 sx, fx32 sy)
 {
     NNS_G2D_ASSERTMSG(!bDonotUseSRTransform,
@@ -219,6 +261,9 @@ static void NNSi_G2dIdentity (void)
     fxZStack_[stackPos_] = 0;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE const MtxFx32 * NNSi_G2dGetCurrentMtx (void)
 {
     if (bDonotUseSRTransform) {
@@ -232,6 +277,9 @@ NNS_G2D_INLINE const MtxFx32 * NNSi_G2dGetCurrentMtx (void)
     }
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE const MtxFx32 * NNSi_G2dGetCurrentMtxFor2DHW (void)
 {
     if (bDonotUseSRTransform) {
@@ -244,11 +292,17 @@ NNS_G2D_INLINE const MtxFx32 * NNSi_G2dGetCurrentMtxFor2DHW (void)
     }
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE fx32 NNSi_G2dGetCurrentZ (void)
 {
     return fxZStack_[stackPos_];
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE u16 NNSi_G2dGetMtxStackPos (void)
 {
 

@@ -5,12 +5,28 @@
 #define HEAP_ALIGN 32
 
 #define ROUNDUP(value, align) (((u32)(value) + ((align) - 1)) & ~((align) - 1))
+#ifdef SDK_PORT
+#define ROUNDUP64( value, align ) ( ( (u64)(value) + ( (align) - 1 ) ) & ~( (align) - 1 ) )
+#endif
 
 typedef struct NNSSndHeap {
     NNSFndHeapHandle handle;
     NNSFndList sectionList;
 } NNSSndHeap;
 
+#ifdef SDK_PORT
+typedef struct NNSSndHeapBlock
+{
+    NNSFndLink link;
+    u32 size;
+    NNSSndHeapDisposeCallback callback;
+    u64 data1;
+    u32 data2;
+    u8 padding[ 0x20 - ( ( sizeof( NNSFndLink ) + sizeof( NNSSndHeapDisposeCallback ) + sizeof( u32 ) * 2 + sizeof( u64 ) ) & 0x1f ) ];
+    u8 padding2[28];
+    u32 buffer[ 0 ];
+} NNSSndHeapBlock;
+#else
 typedef struct NNSSndHeapBlock {
     NNSFndLink link;
     u32 size;
@@ -20,6 +36,7 @@ typedef struct NNSSndHeapBlock {
     u8 padding[ 0x20 - ((sizeof(NNSFndLink) + sizeof(NNSSndHeapDisposeCallback) + sizeof(u32) * 3) & 0x1f) ];
     u32 buffer[ 0 ];
 } NNSSndHeapBlock;
+#endif
 
 typedef struct NNSSndHeapSection {
     NNSFndList blockList;
@@ -40,7 +57,13 @@ NNSSndHeapHandle NNS_SndHeapCreate (void * startAddress, u32 size)
     NNS_NULL_ASSERT(startAddress);
 
     endAddress = (u8 *)startAddress + size;
+    #ifdef SDK_PORT
+    u64 startAddressRounded = (u64)startAddress;
+    startAddressRounded = ROUNDUP64( startAddressRounded, 4 );
+    startAddress = (void *)startAddressRounded;
+    #else
     startAddress = (void *)ROUNDUP(startAddress, 4);
+    #endif
 
     if (startAddress > endAddress) return NNS_SND_HEAP_INVALID_HANDLE;
 
@@ -106,7 +129,11 @@ void NNS_SndHeapClear (NNSSndHeapHandle heap)
     NNS_ASSERTMSG(result, "NNS_SndHeapClear(): NewSection is Failed");
 }
 
+#ifdef SDK_PORT
+void * NNS_SndHeapAlloc (NNSSndHeapHandle heap, u32 size, NNSSndHeapDisposeCallback callback, u64 data1, u32 data2)
+#else
 void * NNS_SndHeapAlloc (NNSSndHeapHandle heap, u32 size, NNSSndHeapDisposeCallback callback, u32 data1, u32 data2)
+#endif
 {
     NNSSndHeapSection * section;
     NNSSndHeapBlock * block;
@@ -179,7 +206,9 @@ void NNS_SndHeapLoadState (NNSSndHeapHandle heap, int level)
     }
 
     result = NNS_FndFreeByStateToFrmHeap(heap->handle, (u32)level);
+    #ifndef SDK_PORT
     NNS_ASSERTMSG(result, "NNS_SndHeapLoadState(): NNS_FndFreeByStateToFrmHeap is Failed");
+    #endif
 
     if (doCallback) EraseSync();
 

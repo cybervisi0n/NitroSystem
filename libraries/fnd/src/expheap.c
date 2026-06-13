@@ -8,6 +8,12 @@
 
 #include "heapcommoni.h"
 
+#ifdef SDK_PORT
+#include <nnsys/g2d/load/g2d_NAN_load.h>
+#include <nnsys/g2d/load/g2d_NCE_load.h>
+#include <nnsys/g2d/load/g2d_NCG_load.h>
+#endif
+
 #define MBLOCK_FREE_SIGNATURE   ('FR')
 #define MBLOCK_USED_SIGNATURE   ('UD')
 #define MAX_GROUPID             0xff
@@ -739,6 +745,11 @@ void NNS_FndFreeToExpHeap (NNSFndHeapHandle heap, void * memBlock)
         NNS_ASSERT(pHeapHd->heapStart <= memBlock && memBlock < pHeapHd->heapEnd);
 
         GetRegionOfMBlock(&region, pMBHead);
+        #ifdef SDK_PORT
+        WIN_CheckAndFreeAnimBank(region.start, region.end);
+        WIN_CheckAndFreeCellBank(region.start, region.end);
+        WIN_CheckAndFreeCharData(region.start, region.end);
+        #endif
         (void)RemoveMBlock(&pExpHeapHd->mbUsedList, pMBHead);
         (void)RecycleRegion(pExpHeapHd, &region);
     }

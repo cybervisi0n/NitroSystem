@@ -15,12 +15,18 @@ static void NNSi_G2dGetMtxRS(const MtxFx32 * m, MtxFx22 * pRet);
 void NNSi_G2dMtxConcat32(const MtxFx32 * a, const MtxFx32 * b, MtxFx32 * ab);
 
 #ifdef SDK_FINALROM
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNSi_G2dDumpMtx32 (const MtxFx32 *){
 }
 #else
     void NNSi_G2dDumpMtx32(const MtxFx32 * m);
 #endif
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNSi_G2dSetTranslate (MtxFx32 * m, fx32 x, fx32 y)
 {
     NNS_G2D_NULL_ASSERT(m);
@@ -33,6 +39,9 @@ NNS_G2D_INLINE void NNSi_G2dSetTranslate (MtxFx32 * m, fx32 x, fx32 y)
     m->_21 = y;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNSi_G2dSetRotate (MtxFx32 * m, fx32 sin, fx32 cos)
 {
     NNS_G2D_NULL_ASSERT(m);
@@ -45,6 +54,9 @@ NNS_G2D_INLINE void NNSi_G2dSetRotate (MtxFx32 * m, fx32 sin, fx32 cos)
     m->_21 = 0;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNSi_G2dSetScale (MtxFx32 * m, fx32 sx, fx32 sy)
 {
     NNS_G2D_NULL_ASSERT(m);
@@ -57,6 +69,9 @@ NNS_G2D_INLINE void NNSi_G2dSetScale (MtxFx32 * m, fx32 sx, fx32 sy)
     m->_21 = 0;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNSi_G2dSetScaleFor2DHW (MtxFx32 * m, fx32 sx, fx32 sy)
 {
     NNS_G2D_NULL_ASSERT(m);
@@ -69,6 +84,9 @@ NNS_G2D_INLINE void NNSi_G2dSetScaleFor2DHW (MtxFx32 * m, fx32 sx, fx32 sy)
     m->_21 = 0;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNSi_G2dGetMtxTrans (const MtxFx32 * m, NNSG2dFVec2 * pRet)
 {
     NNS_G2D_NULL_ASSERT(pRet);
@@ -78,6 +96,9 @@ NNS_G2D_INLINE void NNSi_G2dGetMtxTrans (const MtxFx32 * m, NNSG2dFVec2 * pRet)
     pRet->y = m->_21;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNSi_G2dGetMtxRS (const MtxFx32 * m, MtxFx22 * pRet)
 {
     NNS_G2D_NULL_ASSERT(pRet);
@@ -89,6 +110,9 @@ NNS_G2D_INLINE void NNSi_G2dGetMtxRS (const MtxFx32 * m, MtxFx22 * pRet)
     pRet->_11 = m->_11;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void MulMtx22 (const MtxFx22 * m, const NNSG2dFVec2 * pSrc, NNSG2dFVec2 * pDst)
 {
     NNSG2dFVec2 temp;

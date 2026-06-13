@@ -75,12 +75,18 @@ typedef struct objSize {
     }                                              \
 
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE GXOamShape NNS_G2dGetOAMSize (const GXOamAttr * oamAttr)
 {
     const GXOamShape result = (GXOamShape)((GX_OAM_ATTR01_SHAPE_MASK | GX_OAM_ATTR01_SIZE_MASK) & oamAttr->attr01);
     return result;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE int NNS_G2dGetOamSizeX (const GXOamShape * oamShape)
 {
 #ifdef NNS_FROM_TOOL
@@ -90,6 +96,9 @@ NNS_G2D_INLINE int NNS_G2dGetOamSizeX (const GXOamShape * oamShape)
            [(*oamShape & GX_OAM_ATTR01_SIZE_MASK) >> GX_OAM_ATTR01_SIZE_SHIFT];
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE int NNS_G2dGetOamSizeY (const GXOamShape * oamShape)
 {
 #ifdef NNS_FROM_TOOL

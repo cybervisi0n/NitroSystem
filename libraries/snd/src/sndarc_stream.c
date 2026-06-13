@@ -1,4 +1,7 @@
 #ifndef SDK_SMALL_BUILD
+#if defined( SDK_PORT )
+#define ATTRIBUTE_ALIGN(x) __attribute__((aligned(x)))
+#endif
 
 #include <nnsys/snd/sndarc_stream.h>
 
@@ -148,7 +151,11 @@ static LoadCommand * AllocCommandBuffer(void);
 static void FreeCommandBuffer(LoadCommand * command);
 static s16 DecodeAdpcm(int code, AdpcmState * state);
 static void StrmCallback(NNSSndStrmCallbackStatus status, int numChannels, void * buffer[], u32 len, NNSSndStrmFormat format, void * arg);
+#ifdef SDK_PORT
+static void DisposeCallback(void * mem, u32 size, u64 data1, u32 data2);
+#else
 static void DisposeCallback(void * mem, u32 size, u32 data1, u32 data2);
+#endif
 static void CreateThread(NNSSndStrmThread * thread, u32 threadPrio);
 static void RemoveCommandByPlayer(NNSFndList * commandList, const NNSSndStrmPlayer * player);
 static void MakeWaveData(LoadCommand * command);
@@ -999,7 +1006,11 @@ static void FreeCommandBuffer (LoadCommand * command)
     (void)OS_RestoreInterrupts(old);
 }
 
+#ifdef SDK_PORT
+static void DisposeCallback (void * mem, u32 size, u64 data1, u32 data2)
+#else
 static void DisposeCallback (void * mem, u32, u32 data1, u32)
+#endif
 {
     NNSSndStrmPlayer * player = (NNSSndStrmPlayer *)data1;
 
@@ -1278,7 +1289,11 @@ static void MakeWaveData (LoadCommand * command)
                     u32 end;
 
                     if (blockOffsetSample == 0) {
+                        #ifdef SDK_PORT
+                        *state = *( (AdpcmState*)srcp + 1 );
+                        #else
                         *state = *((AdpcmState *)srcp)++;
+                        #endif
                     }
 
                     end = blockOffsetSample + samples;

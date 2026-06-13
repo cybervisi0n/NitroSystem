@@ -25,11 +25,19 @@ static BOOL LoadSingleWaves(SNDWaveArc * waveArc, const SNDBankData * bank, int 
 static BOOL LoadSingleWave(SNDWaveArc * waveArc, int waveNo, u32 fileId, NNSSndHeapHandle heap);
 
 static void DisposeCallback(void * mem, NNSSndArc * arc, u32 fileId);
+#ifdef SDK_PORT
+static void SeqDisposeCallback(void * mem, u32 size, u64 data1, u32 data2);
+static void BankDisposeCallback(void * mem, u32 size, u64 data1, u32 data2);
+static void WaveArcDisposeCallback(void * mem, u32 size, u64 data1, u32 data2);
+static void WaveArcTableDisposeCallback(void * mem, u32 size, u64 data1, u32 data2);
+static void SingleWaveDisposeCallback(void * mem, u32 size, u64 data1, u32 data2);
+#else
 static void SeqDisposeCallback(void * mem, u32 size, u32 data1, u32 data2);
 static void BankDisposeCallback(void * mem, u32 size, u32 data1, u32 data2);
 static void WaveArcDisposeCallback(void * mem, u32 size, u32 data1, u32 data2);
 static void WaveArcTableDisposeCallback(void * mem, u32 size, u32 data1, u32 data2);
 static void SingleWaveDisposeCallback(void * mem, u32 size, u32 data1, u32 data2);
+#endif
 
 BOOL NNS_SndArcLoadGroup (int groupNo, NNSSndHeapHandle heap)
 {
@@ -260,7 +268,11 @@ NNSSndArcLoadResult NNSi_SndArcLoadWaveArc (int waveArcNo, u32 loadFlag, NNSSndH
     return NNS_SND_ARC_LOAD_SUCESS;
 }
 
+#ifdef SDK_PORT
+void * NNSi_SndArcLoadFile (u32 fileId, NNSSndHeapDisposeCallback callback, u64 data1, u32 data2, NNSSndHeapHandle heap)
+#else
 void * NNSi_SndArcLoadFile (u32 fileId, NNSSndHeapDisposeCallback callback, u32 data1, u32 data2, NNSSndHeapHandle heap)
+#endif
 {
     void * buffer;
     u32 len;
@@ -291,7 +303,11 @@ static NNSSndSeqData * LoadSeq (u32 fileId, NNSSndHeapHandle heap, BOOL bSetAddr
         buffer = NNSi_SndArcLoadFile(
             fileId,
             SeqDisposeCallback,
+            #ifdef SDK_PORT
+            bSetAddr ? (u64)NNS_SndArcGetCurrent() : 0,
+            #else
             bSetAddr ? (u32)NNS_SndArcGetCurrent() : 0,
+            #endif
             fileId,
             heap
             );
@@ -313,7 +329,11 @@ static NNSSndSeqArc * LoadSeqArc (u32 fileId, NNSSndHeapHandle heap, BOOL bSetAd
         buffer = NNSi_SndArcLoadFile(
             fileId,
             SeqDisposeCallback,
+            #ifdef SDK_PORT
+            bSetAddr ? (u64)NNS_SndArcGetCurrent() : 0,
+            #else
             bSetAddr ? (u32)NNS_SndArcGetCurrent() : 0,
+            #endif
             fileId,
             heap
             );
@@ -335,10 +355,27 @@ static SNDBankData * LoadBank (u32 fileId, NNSSndHeapHandle heap, BOOL bSetAddr)
         buffer = NNSi_SndArcLoadFile(
             fileId,
             BankDisposeCallback,
+            #ifdef SDK_PORT
+            bSetAddr ? (u64)NNS_SndArcGetCurrent() : 0,
+            #else
             bSetAddr ? (u32)NNS_SndArcGetCurrent() : 0,
+            #endif
             fileId,
             heap
             );
+
+        #ifdef SDK_PORT
+        if(buffer == NULL){
+            return NULL;
+        }
+
+        u32 len = NNS_SndArcGetFileSize( fileId );
+        u8 * tempBuf = malloc( sizeof( u8 ) * len );
+        memcpy( tempBuf, buffer, len );
+        memset( buffer+offsetof( struct SNDBankData, waveArcLink), 0, sizeof(SNDWaveArcLink) * 4);
+        memcpy( buffer + offsetof(struct SNDBankData, instCount ), tempBuf + offsetof(struct WIN_SNDBankData, instCount), len - offsetof(struct WIN_SNDBankData, instCount ) );
+        free( tempBuf );
+        #endif
 
         if (bSetAddr && buffer != NULL) {
             NNS_SndArcSetFileAddress(fileId, buffer);
@@ -357,7 +394,11 @@ static SNDWaveArc * LoadWaveArc (u32 fileId, NNSSndHeapHandle heap, BOOL bSetAdd
         buffer = NNSi_SndArcLoadFile(
             fileId,
             WaveArcDisposeCallback,
+            #ifdef SDK_PORT
+            bSetAddr ? (u64)NNS_SndArcGetCurrent() : 0,
+            #else
             bSetAddr ? (u32)NNS_SndArcGetCurrent() : 0,
+            #endif
             fileId,
             heap
             );
@@ -445,7 +486,11 @@ static void DisposeCallback (void * mem, NNSSndArc * arc, u32 fileId)
     (void)OS_RestoreInterrupts(old);
 }
 
+#ifdef SDK_PORT
+static void SeqDisposeCallback (void * mem, u32 size, u64 data1, u32 data2)
+#else
 static void SeqDisposeCallback (void * mem, u32 size, u32 data1, u32 data2)
+#endif
 {
     NNSSndArc * arc = (NNSSndArc *)data1;
     u32 fileId = data2;
@@ -454,7 +499,11 @@ static void SeqDisposeCallback (void * mem, u32 size, u32 data1, u32 data2)
     SND_InvalidateSeqData(mem, (u8 *)mem + size);
 }
 
+#ifdef SDK_PORT
+static void BankDisposeCallback (void * mem, u32 size, u64 data1, u32 data2)
+#else
 static void BankDisposeCallback (void * mem, u32 size, u32 data1, u32 data2)
+#endif
 {
     SNDBankData * bank = (SNDBankData *)mem;
     NNSSndArc * arc = (NNSSndArc *)data1;
@@ -466,7 +515,11 @@ static void BankDisposeCallback (void * mem, u32 size, u32 data1, u32 data2)
     SND_DestroyBank(bank);
 }
 
+#ifdef SDK_PORT
+static void WaveArcDisposeCallback (void * mem, u32 size, u64 data1, u32 data2)
+#else
 static void WaveArcDisposeCallback (void * mem, u32 size, u32 data1, u32 data2)
+#endif
 {
     SNDWaveArc * waveArc = (SNDWaveArc *)mem;
     NNSSndArc * arc = (NNSSndArc *)data1;
@@ -478,7 +531,11 @@ static void WaveArcDisposeCallback (void * mem, u32 size, u32 data1, u32 data2)
     SND_DestroyWaveArc(waveArc);
 }
 
+#ifdef SDK_PORT
+static void WaveArcTableDisposeCallback (void * mem, u32 size, u64 data1, u32 data2)
+#else
 static void WaveArcTableDisposeCallback (void * mem, u32 size, u32 data1, u32 data2)
+#endif
 {
     SNDWaveArc * waveArc = (SNDWaveArc *)mem;
     NNSSndArc * arc = (NNSSndArc *)data1;
@@ -490,7 +547,11 @@ static void WaveArcTableDisposeCallback (void * mem, u32 size, u32 data1, u32 da
     SND_DestroyWaveArc(waveArc);
 }
 
+#ifdef SDK_PORT
+static void SingleWaveDisposeCallback (void * mem, u32 size, u64 data1, u32 data2)
+#else
 static void SingleWaveDisposeCallback (void * mem, u32 size, u32 data1, u32 data2)
+#endif
 {
     SNDWaveArc * waveArc = (SNDWaveArc *)data1;
     u32 waveNo = data2;

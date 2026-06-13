@@ -35,7 +35,11 @@ BOOL NNS_SndArcLoadWaveArc(int waveArcNo, NNSSndHeapHandle heap);
 BOOL NNS_SndArcLoadSeqEx(int seqNo, u32 loadFlag, NNSSndHeapHandle heap);
 BOOL NNS_SndArcLoadBankEx(int bankNo, u32 loadFlag, NNSSndHeapHandle heap);
 
+#ifdef SDK_PORT
+void * NNSi_SndArcLoadFile(u32 fileId, NNSSndHeapDisposeCallback callback, u64 data1, u32 data2, NNSSndHeapHandle heap);
+#else
 void * NNSi_SndArcLoadFile(u32 fileId, NNSSndHeapDisposeCallback callback, u32 data1, u32 data2, NNSSndHeapHandle heap);
+#endif
 
 NNSSndArcLoadResult NNSi_SndArcLoadGroup(int groupNo, NNSSndHeapHandle heap);
 NNSSndArcLoadResult NNSi_SndArcLoadSeq(int seqNo, u32 loadFlag, NNSSndHeapHandle heap, BOOL bSetAddr, struct NNSSndSeqData ** pData);

@@ -1,7 +1,11 @@
 #include <nnsys/misc.h>
 #include <nnsys/fnd/list.h>
 
+#ifdef SDK_PORT
+#define OBJ_TO_LINK(list,obj)    ((NNSFndLink *)(((u64)(obj)) + (list)->offset))
+#else
 #define OBJ_TO_LINK(list, obj)   ((NNSFndLink *)(((u32)(obj)) + (list)->offset))
+#endif
 
 void NNS_FndInitList (NNSFndList * list, u16 offset)
 {

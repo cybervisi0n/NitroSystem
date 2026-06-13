@@ -1279,7 +1279,11 @@ void NNS_G2dCharCanvasMakeCell1D (NNSG2dCellData * pCell, const NNSG2dCharCanvas
         const int areaCHeight = (u16)pCC->areaHeight;
 
         const u16 numObj = (u16)NNS_G2dCalcRequiredOBJ1D(areaCWidth, areaCHeight);
+        #ifdef SDK_PORT
+        GXOamAttr* pTmpBuffer = (GXOamAttr*)malloc(sizeof(GXOamAttr) * numObj);
+        #else
         GXOamAttr * pTmpBuffer = (GXOamAttr *)__alloca(sizeof(GXOamAttr) * numObj);
+        #endif
 
         (void)NNS_G2dArrangeOBJ1D(
             pTmpBuffer,
@@ -1318,7 +1322,11 @@ void NNS_G2dCharCanvasMakeCell2DRect (NNSG2dCellData * pCell, const NNSG2dCharCa
         const int areaCHeight = (u16)pCC->areaHeight;
 
         const u16 numObj = (u16)NNS_G2dCalcRequiredOBJ1D(areaCWidth, areaCHeight);
+        #ifdef SDK_PORT
+        GXOamAttr* pTmpBuffer = (GXOamAttr*)malloc(sizeof(GXOamAttr) * numObj);
+        #else
         GXOamAttr * pTmpBuffer = (GXOamAttr *)__alloca(sizeof(GXOamAttr) * numObj);
+        #endif
 
         (void)NNS_G2dArrangeOBJ2DRect(
             pTmpBuffer,

@@ -5,6 +5,9 @@
 extern "C" {
 #endif
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE NNSG2dAnimationType NNS_G2dGetAnimCtrlType (const NNSG2dAnimController * pAnimCtrl)
 {
     NNS_G2D_NULL_ASSERT(pAnimCtrl);
@@ -15,36 +18,54 @@ NNS_G2D_INLINE NNSG2dAnimationType NNS_G2dGetAnimCtrlType (const NNSG2dAnimContr
     }
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dSetAnimCtrlSpeed (NNSG2dAnimController * pAnimCtrl, fx32 speed)
 {
     NNS_G2D_NULL_ASSERT(pAnimCtrl);
     pAnimCtrl->speed = speed;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE fx32 NNS_G2dGetAnimCtrlSpeed (const NNSG2dAnimController * pAnimCtrl)
 {
     NNS_G2D_NULL_ASSERT(pAnimCtrl);
     return pAnimCtrl->speed;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dStartAnimCtrl (NNSG2dAnimController * pAnimCtrl)
 {
     NNS_G2D_NULL_ASSERT(pAnimCtrl);
     pAnimCtrl->bActive = TRUE;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dStopAnimCtrl (NNSG2dAnimController * pAnimCtrl)
 {
     NNS_G2D_NULL_ASSERT(pAnimCtrl);
     pAnimCtrl->bActive = FALSE;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE BOOL NNS_G2dIsAnimCtrlActive (const NNSG2dAnimController * pAnimCtrl)
 {
     NNS_G2D_NULL_ASSERT(pAnimCtrl);
     return pAnimCtrl->bActive;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dSetAnimCtrlPlayModeOverridden (NNSG2dAnimController * pAnimCtrl, NNSG2dAnimationPlayMode playMode)
 {
     NNS_G2D_NULL_ASSERT(pAnimCtrl);
@@ -53,24 +74,36 @@ NNS_G2D_INLINE void NNS_G2dSetAnimCtrlPlayModeOverridden (NNSG2dAnimController *
     pAnimCtrl->overriddenPlayMode = playMode;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dResetAnimCtrlPlayModeOverridden (NNSG2dAnimController * pAnimCtrl)
 {
     NNS_G2D_NULL_ASSERT(pAnimCtrl);
     pAnimCtrl->overriddenPlayMode = NNS_G2D_ANIMATIONPLAYMODE_INVALID;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE fx32 NNS_G2dGetAnimCtrlCurrentTime (const NNSG2dAnimController * pAnimCtrl)
 {
     NNS_G2D_NULL_ASSERT(pAnimCtrl);
     return pAnimCtrl->currentTime;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dSetAnimCtrlCurrentTime (NNSG2dAnimController * pAnimCtrl, fx32 time)
 {
     NNS_G2D_NULL_ASSERT(pAnimCtrl);
     pAnimCtrl->currentTime = time;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE u16 NNS_G2dGetAnimCtrlCurrentElemIdxVal (const NNSG2dAnimController * pAnimCtrl)
 {
     NNS_G2D_NULL_ASSERT(pAnimCtrl);
@@ -81,6 +114,9 @@ NNS_G2D_INLINE u16 NNS_G2dGetAnimCtrlCurrentElemIdxVal (const NNSG2dAnimControll
     }
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE const NNSG2dAnimSequence * NNS_G2dGetAnimCtrlCurrentAnimSequence (const NNSG2dAnimController * pAnimCtrl)
 {
     NNS_G2D_NULL_ASSERT(pAnimCtrl);

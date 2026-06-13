@@ -41,9 +41,15 @@ static const char * GetSymbol(const NNSSndArcOffsetTable * table, int index, con
 static void * GetPtr(void * base, u32 offset);
 static const void * GetPtrConst(const void * base, u32 offset);
 static const NNSSndArcOffsetTable * GetOffsetTable(const NNSSndArcInfo * info, u32 offset);
+#ifdef SDK_PORT
+static void InfoDisposeCallback(void * mem, u32 size, u64 data1, u32 data2);
+static void FatDisposeCallback(void * mem, u32 size, u64 data1, u32 data2);
+static void SymbolDisposeCallback(void * mem, u32 size, u64 data1, u32 data2);
+#else
 static void InfoDisposeCallback(void * mem, u32 size, u32 data1, u32 data2);
 static void FatDisposeCallback(void * mem, u32 size, u32 data1, u32 data2);
 static void SymbolDisposeCallback(void * mem, u32 size, u32 data1, u32 data2);
+#endif
 
 static NNS_SND_INLINE
 void * GetPtr (void * base, u32 offset)
@@ -81,12 +87,23 @@ void NNS_SndArcInit (NNSSndArc * arc, const char * filePath, NNSSndHeapHandle he
     arc->symbol = NULL;
     arc->loadBlockSize = 0;
 
+    #ifdef SDK_PORT
+    result = FS_OpenFile( &arc->file, filePath );
+    NNS_ASSERTMSG( result, "Cannot open file %s\n", filePath );
+    if ( ! result ) return;
+    #else
     result = FS_ConvertPathToFileID(&arc->fileId, filePath);
     NNS_ASSERTMSG(result, "Cannot find file %s\n", filePath);
     if (!result) return;
+    #endif
 
     FS_InitFile(&arc->file);
+
+    #ifdef SDK_PORT
+    result = FS_OpenFile(& arc->file, filePath);
+    #else
     result = FS_OpenFileFast(&arc->file, arc->fileId);
+    #endif
     NNS_ASSERTMSG(result, "Cannot open file %s\n", filePath);
     if (!result) return;
 
@@ -163,13 +180,33 @@ BOOL NNS_SndArcSetup (NNSSndArc * arc, NNSSndHeapHandle heap, BOOL symbolLoadFla
         if (readSize != arc->header.infoSize) return FALSE;
         NNS_ASSERT(arc->info->blockHeader.kind == NNS_SND_ARC_SIGNATURE_INFO);
 
+        #ifdef SDK_PORT
+        arc->fat = (NNSSndArcFat *)NNS_SndHeapAlloc(heap, arc->header.fatSize*2, FatDisposeCallback, (u32)arc, 0);
+        #else
         arc->fat = (NNSSndArcFat *)NNS_SndHeapAlloc(heap, arc->header.fatSize, FatDisposeCallback, (u32)arc, 0);
+        #endif
         if (arc->fat == NULL) return FALSE;
         result = FS_SeekFile(&arc->file, (s32)(arc->header.fatOffset), FS_SEEK_SET);
         if (!result) return FALSE;
         readSize = FS_ReadFile(&arc->file, arc->fat, (s32)(arc->header.fatSize));
         if (readSize != arc->header.fatSize) return FALSE;
         NNS_ASSERT(arc->fat->blockHeader.kind == NNS_SND_ARC_SIGNATURE_FAT);
+
+        #ifdef SDK_PORT
+        WIN_NNSSndArcFat * arcFatWin;
+        arcFatWin = malloc( sizeof( WIN_NNSSndArcFat ) + ( sizeof( WIN_NNSSndArcFileInfo ) * arc->fat->count ));
+        arcFatWin = memcpy( arcFatWin, arc->fat, (sizeof( WIN_NNSSndArcFat ) + ( sizeof( WIN_NNSSndArcFileInfo ) * arc->fat->count)) );
+
+        for( int i=0; i< arc->fat->count; i++ )
+        {
+            arc->fat->files[i].offset = arcFatWin->files[i].offset;
+            arc->fat->files[i].size = arcFatWin->files[i].size;
+            arc->fat->files[i].mem = NULL;
+            arc->fat->files[i].reserved = arcFatWin->files[i].reserved;
+        }
+
+        free( arcFatWin );
+        #endif
 
         if (symbolLoadFlag && arc->header.symbolDataSize > 0) {
             arc->symbol = (NNSSndArcSymbol *)NNS_SndHeapAlloc(heap, arc->header.symbolDataSize, SymbolDisposeCallback, (u32)arc, 0);
@@ -769,7 +806,11 @@ static const char * GetSymbol (const NNSSndArcOffsetTable * table, int index, co
     return (const char *)GetPtrConst(base, table->offset[ index ]);
 }
 
+#ifdef SDK_PORT
+static void InfoDisposeCallback (void * mem, u32 size, u64 data1, u32 data2)
+#else
 static void InfoDisposeCallback (void * mem, u32 size, u32 data1, u32 data2)
+#endif
 {
     NNSSndArc * arc = (NNSSndArc *)data1;
 
@@ -782,7 +823,11 @@ static void InfoDisposeCallback (void * mem, u32 size, u32 data1, u32 data2)
     arc->info = NULL;
 }
 
+#ifdef SDK_PORT
+static void FatDisposeCallback (void * mem, u32 size, u64 data1, u32 data2)
+#else
 static void FatDisposeCallback (void * mem, u32 size, u32 data1, u32 data2)
+#endif
 {
     NNSSndArc * arc = (NNSSndArc *)data1;
     int i;
@@ -806,7 +851,11 @@ static void FatDisposeCallback (void * mem, u32 size, u32 data1, u32 data2)
     arc->fat = NULL;
 }
 
+#ifdef SDK_PORT
+static void SymbolDisposeCallback (void * mem, u32 size, u64 data1, u32 data2)
+#else
 static void SymbolDisposeCallback (void * mem, u32 size, u32 data1, u32 data2)
+#endif
 {
     NNSSndArc * arc = (NNSSndArc *)data1;
 

@@ -23,8 +23,14 @@ BOOL NNS_SndReadDriverChannelInfo(int chNo, SNDChannelInfo * info);
 BOOL NNSi_SndReadDriverPlayerInfo(int playerNo, SNDPlayerInfo * info);
 BOOL NNSi_SndReadDriverTrackInfo(int playerNo, int trackNo, SNDTrackInfo * info);
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_SND_INLINE void NNS_SndBeginSleep (void) {
 }
+#ifdef SDK_PORT
+static
+#endif
 NNS_SND_INLINE void NNS_SndEndSleep (void) {
 }
 

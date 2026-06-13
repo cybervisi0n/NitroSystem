@@ -21,21 +21,33 @@ typedef struct MCMMtxState {
     u16 pad16;
 } MCMMtxState;
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE u16 GetMtxStateMtxCacheIdx_ (const MCMMtxState * pMtxState)
 {
     return pMtxState->mtxCacheIdx;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void SetMtxStateMtxCacheIdx_ (MCMMtxState * pMtxState, u16 cacheIdx)
 {
     pMtxState->mtxCacheIdx = cacheIdx;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE u16 GetMtxStateGroupID_ (const MCMMtxState * pMtxState)
 {
     return pMtxState->groupID;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void SetMtxStateGroupID_ (MCMMtxState * pMtxState, u16 groupID)
 {
     pMtxState->groupID = groupID;
@@ -44,11 +56,17 @@ NNS_G2D_INLINE void SetMtxStateGroupID_ (MCMMtxState * pMtxState, u16 groupID)
 static MCMMtxState mtxStateStack_[G2Di_NUM_MTX_CACHE];
 static u16 groupID_ = 0;
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE MCMMtxState * GetCuurentMtxState_ ()
 {
     return &mtxStateStack_[NNSi_G2dGetMtxStackPos()];
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void SetParentMtxStateLoaded_ (u16 mtxCacheIdx, u16 groupID)
 {
     int i;
@@ -70,16 +88,25 @@ NNS_G2D_INLINE void SetParentMtxStateLoaded_ (u16 mtxCacheIdx, u16 groupID)
     }
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE u16 GetNewGroupID_ (void)
 {
     return groupID_++;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void InitGroupID_ (void)
 {
     groupID_ = 0;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNSi_G2dMCMInitMtxCache (void)
 {
     NNSi_G2dInitRndMtxStack();
@@ -90,11 +117,17 @@ NNS_G2D_INLINE void NNSi_G2dMCMInitMtxCache (void)
     MI_CpuClearFast(mtxStateStack_, sizeof(mtxStateStack_));
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE NNSG2dRndCore2DMtxCache * NNSi_G2dMCMGetCurrentMtxCache (void)
 {
     return NNSi_RMCGetMtxCacheByIdx(GetMtxStateMtxCacheIdx_(GetCuurentMtxState_()));
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNSi_G2dMCMCleanupMtxCache (void)
 {
     NNSi_G2dInitRndMtxStack();
@@ -106,6 +139,9 @@ NNS_G2D_INLINE void NNSi_G2dMCMCleanupMtxCache (void)
     MI_CpuClearFast(mtxStateStack_, sizeof(mtxStateStack_));
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE BOOL NNSi_G2dMCMShouldCurrentMtxBeLoadedToMtxCache (void)
 {
     MCMMtxState * pCurrMtxState = GetCuurentMtxState_();
@@ -114,6 +150,9 @@ NNS_G2D_INLINE BOOL NNSi_G2dMCMShouldCurrentMtxBeLoadedToMtxCache (void)
                   pCurrMtxState->stateType == MCM_MTX_SR_NOT_CACHELOADED_STACKCHANGED);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNSi_G2dMCMSetCurrentMtxSRChanged (void)
 {
     MCMMtxState * pCurrMtxState = GetCuurentMtxState_();
@@ -137,6 +176,9 @@ NNS_G2D_INLINE void NNSi_G2dMCMSetCurrentMtxSRChanged (void)
     }
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNSi_G2dMCMSetMtxStackPushed (u16 newPos, u16 lastPos)
 {
     mtxStateStack_[newPos] = mtxStateStack_[lastPos];

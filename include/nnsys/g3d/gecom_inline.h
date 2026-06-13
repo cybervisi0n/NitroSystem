@@ -5,52 +5,79 @@
 extern "C" {
 #endif
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGeBufferData_N (const u32 * args, u32 num)
 {
     NNS_G3D_ASSERT(args && num > 0);
     NNS_G3dGeBufferOP_N(*args, args + 1, num - 1);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGeMtxMode (GXMtxMode mode)
 {
     GX_MTXMODE_ASSERT(mode);
     NNS_G3dGeBufferOP_N(G3OP_MTX_MODE, (u32 *)&mode, G3OP_MTX_MODE_NPARAMS);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGePushMtx (void)
 {
     NNS_G3dGeBufferOP_N(G3OP_MTX_PUSH, NULL, G3OP_MTX_PUSH_NPARAMS);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGePopMtx (int num)
 {
     GX_MTX_POP_NUM_ASSERT(num);
     NNS_G3dGeBufferOP_N(G3OP_MTX_POP, (u32 *)&num, G3OP_MTX_POP_NPARAMS);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGeStoreMtx (int num)
 {
     GX_MTX_STORE_NUM_ASSERT(num);
     NNS_G3dGeBufferOP_N(G3OP_MTX_STORE, (u32 *)&num, G3OP_MTX_STORE_NPARAMS);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGeRestoreMtx (int num)
 {
     GX_MTX_RESTORE_NUM_ASSERT(num);
     NNS_G3dGeBufferOP_N(G3OP_MTX_RESTORE, (u32 *)&num, G3OP_MTX_RESTORE_NPARAMS);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGeIdentity (void)
 {
     NNS_G3dGeBufferOP_N(G3OP_MTX_IDENTITY, NULL, G3OP_MTX_IDENTITY_NPARAMS);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGeScaleVec (const VecFx32 * vec)
 {
     NNS_G3D_NULL_ASSERT(vec);
     NNS_G3dGeBufferOP_N(G3OP_MTX_SCALE, (u32 *)vec, G3OP_MTX_SCALE_NPARAMS);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGeScale (fx32 x, fx32 y, fx32 z)
 {
     VecFx32 vec;
@@ -60,12 +87,18 @@ NNS_G3D_INLINE void NNS_G3dGeScale (fx32 x, fx32 y, fx32 z)
     NNS_G3dGeBufferOP_N(G3OP_MTX_SCALE, (u32 *)&vec, G3OP_MTX_SCALE_NPARAMS);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGeTranslateVec (const VecFx32 * vec)
 {
     NNS_G3D_NULL_ASSERT(vec);
     NNS_G3dGeBufferOP_N(G3OP_MTX_TRANS, (u32 *)vec, G3OP_MTX_TRANS_NPARAMS);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGeTranslate (fx32 x, fx32 y, fx32 z)
 {
     VecFx32 vec;
@@ -75,6 +108,9 @@ NNS_G3D_INLINE void NNS_G3dGeTranslate (fx32 x, fx32 y, fx32 z)
     NNS_G3dGeBufferOP_N(G3OP_MTX_TRANS, (u32 *)&vec, G3OP_MTX_TRANS_NPARAMS);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGeColor (GXRgb rgb)
 {
     u32 tmp;
@@ -83,6 +119,9 @@ NNS_G3D_INLINE void NNS_G3dGeColor (GXRgb rgb)
     NNS_G3dGeBufferOP_N(G3OP_COLOR, (u32 *)&tmp, G3OP_COLOR_NPARAMS);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGeNormal (fx16 x, fx16 y, fx16 z)
 {
     u32 tmp;
@@ -95,6 +134,9 @@ NNS_G3D_INLINE void NNS_G3dGeNormal (fx16 x, fx16 y, fx16 z)
     NNS_G3dGeBufferOP_N(G3OP_NORMAL, (u32 *)&tmp, G3OP_NORMAL_NPARAMS);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGeTexCoord (fx32 s, fx32 t)
 {
     u32 tmp;
@@ -106,6 +148,9 @@ NNS_G3D_INLINE void NNS_G3dGeTexCoord (fx32 s, fx32 t)
     NNS_G3dGeBufferOP_N(G3OP_TEXCOORD, (u32 *)&tmp, G3OP_TEXCOORD_NPARAMS);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGeVtx (fx16 x, fx16 y, fx16 z)
 {
     u32 tmp[2];
@@ -115,30 +160,45 @@ NNS_G3D_INLINE void NNS_G3dGeVtx (fx16 x, fx16 y, fx16 z)
     NNS_G3dGeBufferOP_N(G3OP_VTX_16, tmp, G3OP_VTX_16_NPARAMS);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGeVtx10 (fx16 x, fx16 y, fx16 z)
 {
     u32 tmp = GX_PACK_VTX10_PARAM(x, y, z);
     NNS_G3dGeBufferOP_N(G3OP_VTX_10, &tmp, G3OP_VTX_10_NPARAMS);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGeVtxXY (fx16 x, fx16 y)
 {
     u32 tmp = GX_PACK_VTXXY_PARAM(x, y);
     NNS_G3dGeBufferOP_N(G3OP_VTX_XY, &tmp, G3OP_VTX_XY_NPARAMS);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGeVtxXZ (fx16 x, fx16 z)
 {
     u32 tmp = GX_PACK_VTXXZ_PARAM(x, z);
     NNS_G3dGeBufferOP_N(G3OP_VTX_XZ, &tmp, G3OP_VTX_XZ_NPARAMS);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGeVtxYZ (fx16 y, fx16 z)
 {
     u32 tmp = GX_PACK_VTXYZ_PARAM(y, z);
     NNS_G3dGeBufferOP_N(G3OP_VTX_YZ, &tmp, G3OP_VTX_YZ_NPARAMS);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGeVtxDiff (fx16 x, fx16 y, fx16 z)
 {
     u32 tmp;
@@ -151,6 +211,9 @@ NNS_G3D_INLINE void NNS_G3dGeVtxDiff (fx16 x, fx16 y, fx16 z)
     NNS_G3dGeBufferOP_N(G3OP_VTX_DIFF, &tmp, G3OP_VTX_DIFF_NPARAMS);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGePolygonAttr (int light, GXPolygonMode polyMode, GXCull cullMode, int polygonID, int alpha, int misc)
 {
     u32 tmp;
@@ -172,6 +235,9 @@ NNS_G3D_INLINE void NNS_G3dGePolygonAttr (int light, GXPolygonMode polyMode, GXC
                         G3OP_POLYGON_ATTR_NPARAMS);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGeTexImageParam (GXTexFmt texFmt, GXTexGen texGen, GXTexSizeS s, GXTexSizeT t, GXTexRepeat repeat, GXTexFlip flip, GXTexPlttColor0 pltt0, u32 addr)
 {
     u32 tmp;
@@ -199,6 +265,9 @@ NNS_G3D_INLINE void NNS_G3dGeTexImageParam (GXTexFmt texFmt, GXTexGen texGen, GX
                         G3OP_TEXIMAGE_PARAM_NPARAMS);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGeTexPlttBase (u32 addr, GXTexFmt texfmt)
 {
     u32 param = GX_PACK_TEXPLTTBASE_PARAM(addr, texfmt);
@@ -209,6 +278,9 @@ NNS_G3D_INLINE void NNS_G3dGeTexPlttBase (u32 addr, GXTexFmt texfmt)
                         G3OP_TEXPLTT_BASE_NPARAMS);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGeMaterialColorDiffAmb (GXRgb diffuse, GXRgb ambient, BOOL IsSetVtxColor)
 {
     u32 tmp;
@@ -222,6 +294,9 @@ NNS_G3D_INLINE void NNS_G3dGeMaterialColorDiffAmb (GXRgb diffuse, GXRgb ambient,
                         G3OP_DIF_AMB_NPARAMS);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGeMaterialColorSpecEmi (GXRgb specular, GXRgb emission, BOOL IsShininess)
 {
     u32 tmp;
@@ -235,6 +310,9 @@ NNS_G3D_INLINE void NNS_G3dGeMaterialColorSpecEmi (GXRgb specular, GXRgb emissio
                         G3OP_SPE_EMI_NPARAMS);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGeLightVector (GXLightId lightID, fx16 x, fx16 y, fx16 z)
 {
     u32 tmp;
@@ -250,6 +328,9 @@ NNS_G3D_INLINE void NNS_G3dGeLightVector (GXLightId lightID, fx16 x, fx16 y, fx1
                         G3OP_LIGHT_VECTOR_NPARAMS);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGeLightColor (GXLightId lightID, GXRgb rgb)
 {
     u32 tmp;
@@ -263,6 +344,9 @@ NNS_G3D_INLINE void NNS_G3dGeLightColor (GXLightId lightID, GXRgb rgb)
                         G3OP_LIGHT_COLOR_NPARAMS);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGeBegin (GXBegin primitive)
 {
     GX_BEGIN_ASSERT(primitive);
@@ -272,11 +356,17 @@ NNS_G3D_INLINE void NNS_G3dGeBegin (GXBegin primitive)
                         G3OP_BEGIN_NPARAMS);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGeEnd (void)
 {
     NNS_G3dGeBufferOP_N(G3OP_END, NULL, G3OP_END_NPARAMS);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGeViewPort (int x1, int y1, int x2, int y2)
 {
     u32 tmp;
@@ -286,6 +376,9 @@ NNS_G3D_INLINE void NNS_G3dGeViewPort (int x1, int y1, int x2, int y2)
     NNS_G3dGeBufferOP_N(G3OP_VIEWPORT, &tmp, G3OP_VIEWPORT_NPARAMS);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGeBoxTest (const GXBoxTestParam * box)
 {
     NNS_G3D_NULL_ASSERT(box);
@@ -295,6 +388,9 @@ NNS_G3D_INLINE void NNS_G3dGeBoxTest (const GXBoxTestParam * box)
                         G3OP_BOX_TEST_NPARAMS);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGePositionTest (fx16 x, fx16 y, fx16 z)
 {
     u32 tmp[2];
@@ -306,6 +402,9 @@ NNS_G3D_INLINE void NNS_G3dGePositionTest (fx16 x, fx16 y, fx16 z)
                         G3OP_POS_TEST_NPARAMS);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGeVectorTest (fx16 x, fx16 y, fx16 z)
 {
     u32 tmp;
@@ -320,6 +419,9 @@ NNS_G3D_INLINE void NNS_G3dGeVectorTest (fx16 x, fx16 y, fx16 z)
                         G3OP_VEC_TEST_NPARAMS);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGeLoadMtx44 (const MtxFx44 * m)
 {
     NNS_G3D_NULL_ASSERT(m);
@@ -329,6 +431,9 @@ NNS_G3D_INLINE void NNS_G3dGeLoadMtx44 (const MtxFx44 * m)
                         G3OP_MTX_LOAD_4x4_NPARAMS);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGeLoadMtx43 (const MtxFx43 * m)
 {
     NNS_G3D_NULL_ASSERT(m);
@@ -338,6 +443,9 @@ NNS_G3D_INLINE void NNS_G3dGeLoadMtx43 (const MtxFx43 * m)
                         G3OP_MTX_LOAD_4x3_NPARAMS);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGeMultMtx44 (const MtxFx44 * m)
 {
     NNS_G3D_NULL_ASSERT(m);
@@ -347,6 +455,9 @@ NNS_G3D_INLINE void NNS_G3dGeMultMtx44 (const MtxFx44 * m)
                         G3OP_MTX_MULT_4x4_NPARAMS);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGeMultMtx43 (const MtxFx43 * m)
 {
     NNS_G3D_NULL_ASSERT(m);
@@ -356,6 +467,9 @@ NNS_G3D_INLINE void NNS_G3dGeMultMtx43 (const MtxFx43 * m)
                         G3OP_MTX_MULT_4x3_NPARAMS);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGeMultMtx33 (const MtxFx33 * m)
 {
     NNS_G3D_NULL_ASSERT(m);
@@ -365,6 +479,9 @@ NNS_G3D_INLINE void NNS_G3dGeMultMtx33 (const MtxFx33 * m)
                         G3OP_MTX_MULT_3x3_NPARAMS);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGeShininess (const u32 * table)
 {
     NNS_G3D_NULL_ASSERT(table);

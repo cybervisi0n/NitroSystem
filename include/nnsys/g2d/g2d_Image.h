@@ -78,6 +78,9 @@ void NNSi_G2dDoLoadingPaletteToVram(const NNSG2dPaletteData * pSrcData, u32 addr
 void NNSi_G2dDoLoadingPaletteToVramEx(const NNSG2dPaletteData * pSrcData, const NNSG2dPaletteCompressInfo * pCmpInfo, u32 addr, NNS_G2D_VRAM_TYPE type);
 void NNSi_G2dSetupPaletteProxyPrams(const NNSG2dPaletteData * pSrcData, u32 addr, NNS_G2D_VRAM_TYPE type, NNSG2dImagePaletteProxy * pPltProxy);
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE BOOL NNS_G2dIsPaletteImageFmt (const NNSG2dImageAttr * imgAttr)
 {
     NNS_G2D_NULL_ASSERT(imgAttr);
@@ -86,6 +89,9 @@ NNS_G2D_INLINE BOOL NNS_G2dIsPaletteImageFmt (const NNSG2dImageAttr * imgAttr)
             imgAttr->fmt == GX_TEXFMT_PLTT256) ? TRUE : FALSE;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dSetImageExtPaletteFlag (NNSG2dImageProxy * pImgProxy, BOOL bUseExtPlt)
 {
     NNS_G2D_NULL_ASSERT(pImgProxy);

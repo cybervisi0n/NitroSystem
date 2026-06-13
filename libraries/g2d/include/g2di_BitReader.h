@@ -16,6 +16,9 @@ typedef struct NNSiG2dBitReader {
     u8 padding_[2];
 } NNSiG2dBitReader;
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNSi_G2dBitReaderInit (NNSiG2dBitReader * reader, const void * src)
 {
     reader->availableBits = 0;
@@ -25,6 +28,9 @@ NNS_G2D_INLINE void NNSi_G2dBitReaderInit (NNSiG2dBitReader * reader, const void
 
 u32 NNSi_G2dBitReaderRead(NNSiG2dBitReader * reader, int nBits);
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNSi_G2dBitReaderAlignByte (NNSiG2dBitReader * reader)
 {
     reader->availableBits &= 8;

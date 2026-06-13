@@ -250,7 +250,11 @@ void NNS_G2dSetupSoftwareSpriteCamera (void)
             G3_LookAt(&Eye, &vUp, &at, NULL);
         }
 
+        #ifdef SDK_PORT
+        G3_MtxMode( GX_MTXMODE_POSITION_VECTOR );
+        #else
         G3_MtxMode(GX_MTXMODE_POSITION);
+        #endif
     }
 }
 

@@ -24,6 +24,9 @@ typedef enum OAM_FLIP {
 static NNSG2dRndCore2DMtxCache mtxCacheBuffer_[G2Di_NUM_MTX_CACHE];
 static u16 currentMtxCachePos_ = 0;
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNSi_RMCInitMtxCache (void)
 {
     int i;
@@ -33,6 +36,9 @@ NNS_G2D_INLINE void NNSi_RMCInitMtxCache (void)
     currentMtxCachePos_ = 0;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNSi_RMCResetMtxCache (void)
 {
     int i;
@@ -43,12 +49,18 @@ NNS_G2D_INLINE void NNSi_RMCResetMtxCache (void)
     currentMtxCachePos_ = 0;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE NNSG2dRndCore2DMtxCache * NNSi_RMCGetMtxCacheByIdx (u16 idx)
 {
     NNS_G2D_MINMAX_ASSERT(idx, 0, G2Di_NUM_MTX_CACHE - 1);
     return &mtxCacheBuffer_[idx];
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE u16 NNSi_RMCUseNewMtxCache (void)
 {
     const u16 ret = currentMtxCachePos_;

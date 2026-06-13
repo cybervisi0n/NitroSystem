@@ -446,7 +446,18 @@ BOOL NNSi_SndCaptureStart (NNSSndCaptureType type, void * buffer0, void * buffer
     cap->bufferL = buffer0;
     cap->bufferR = buffer1;
     cap->bufLen = bufLen;
+    #ifdef SDK_PORT
+    if( interval != 0 )
+    {
+        cap->blockSize = bufLen / interval;
+    }
+    else
+    {
+        cap->blockSize = 0;
+    }
+    #else
     cap->blockSize = bufLen / interval;
+    #endif
 
     cap->curBuffer = 0;
 

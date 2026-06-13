@@ -28,6 +28,9 @@ void NNSi_G2dUnpackUserExCellAttrBank(NNSG2dUserExCellAttrBank * pCellAttrBank);
     NNS_G2D_DEBUG_FUNC_DECL_BEGIN void NNSi_G2dPrintUserExCellAttrBank (const NNSG2dUserExCellAttrBank *) NNS_G2D_DEBUG_FUNC_DECL_END
 #endif
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE BOOL NNSi_G2dIsBinFileSignatureValid (const NNSG2dBinaryFileHeader * pBinFile, u32 binFileSig)
 {
     if (pBinFile != NULL) {
@@ -38,6 +41,9 @@ NNS_G2D_INLINE BOOL NNSi_G2dIsBinFileSignatureValid (const NNSG2dBinaryFileHeade
     return FALSE;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE BOOL NNSi_G2dIsBinFileVersionValid (const NNSG2dBinaryFileHeader * pBinFile, u16 version)
 {
     if (pBinFile != NULL) {
@@ -48,6 +54,9 @@ NNS_G2D_INLINE BOOL NNSi_G2dIsBinFileVersionValid (const NNSG2dBinaryFileHeader 
     return FALSE;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE BOOL NNS_G2dIsBinFileValid (const NNSG2dBinaryFileHeader * pBinFile, u32 binFileSig, u16 version)
 {
     if (pBinFile != NULL) {

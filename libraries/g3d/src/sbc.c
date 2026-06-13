@@ -726,9 +726,15 @@ void NNSi_G3dFuncSbc_BB (NNSG3dRS * rs, u32 opt)
 
         NNS_G3dGeFlushBuffer();
 
+        #ifdef SDK_PORT
+        G3_MtxMode(GX_MTXMODE_PROJECTION);
+        G3_PushMtx();
+        G3_Identity();
+        #else
         reg_G3X_GXFIFO = GX_PACK_OP(G3OP_MTX_MODE, G3OP_MTX_PUSH, G3OP_MTX_IDENTITY, G3OP_NOP);
         reg_G3X_GXFIFO = (u32)GX_MTXMODE_PROJECTION;
         reg_G3X_GXFIFO = 0;
+        #endif
 
         while (G3X_GetClipMtx(&m))
             ;
@@ -757,6 +763,22 @@ void NNSi_G3dFuncSbc_BB (NNSG3dRS * rs, u32 opt)
 
         if (NNS_G3dGlb.flag & NNS_G3D_GLB_FLAG_FLUSH_WVP) {
 
+            #ifdef SDK_PORT
+            G3_PopMtx(bbcmd1[1]);
+            G3_MtxMode(GX_MTXMODE_POSITION_VECTOR);
+            G3_LoadMtx43(NNS_G3dGlbGetInvSrtCameraMtx());
+
+            draw_msg_t * msg;
+            msg = malloc( sizeof( draw_msg_t ) );
+            msg->type = DRAW_CMD_G3_CMD_LIST;
+            u8 * cmdBuf = malloc(sizeof(MtxFx43) + sizeof(VecFx32) + sizeof(u32) );
+            *(u32*)cmdBuf = GX_PACK_OP(G3OP_MTX_POP, G3OP_MTX_MODE, G3OP_MTX_LOAD_4x3, G3OP_NOP);
+            memcpy(cmdBuf+4, &bbcmd1[3], sizeof(MtxFx43) + sizeof(VecFx32));
+            msg->data.ptr = cmdBuf;
+            msg->size = (sizeof(MtxFx43) + sizeof(VecFx32) + sizeof(u32));
+            SIM_HandleG3Command( msg );
+            free( msg );
+            #else
             reg_G3X_GXFIFO = GX_PACK_OP(G3OP_MTX_POP, G3OP_MTX_MODE, G3OP_MTX_LOAD_4x3, G3OP_NOP);
             MI_CpuSend32(&bbcmd1[1],
                          &reg_G3X_GXFIFO,
@@ -769,6 +791,7 @@ void NNSi_G3dFuncSbc_BB (NNSG3dRS * rs, u32 opt)
             MI_CpuSend32(&bbcmd1[3],
                          &reg_G3X_GXFIFO,
                          sizeof(MtxFx43) + sizeof(VecFx32));
+            #endif
         } else if (NNS_G3dGlb.flag & NNS_G3D_GLB_FLAG_FLUSH_VP)   {
             reg_G3X_GXFIFO = GX_PACK_OP(G3OP_MTX_POP, G3OP_MTX_MODE, G3OP_MTX_LOAD_4x3, G3OP_NOP);
             MI_CpuSend32(&bbcmd1[1],
@@ -783,9 +806,21 @@ void NNSi_G3dFuncSbc_BB (NNSG3dRS * rs, u32 opt)
                          &reg_G3X_GXFIFO,
                          sizeof(MtxFx43) + sizeof(VecFx32));
         } else {
+            #ifdef SDK_PORT
+            draw_msg_t * msg;
+            msg = malloc( sizeof( draw_msg_t ) );
+            msg->type = DRAW_CMD_G3_CMD_LIST;
+            u8 * cmdBuf = malloc( 18 * sizeof(u32) );
+            memcpy(cmdBuf, bbcmd1, 18 * sizeof(u32));
+            msg->data.ptr = cmdBuf;
+            msg->size = (18 * sizeof(u32));
+            SIM_HandleG3Command( msg );
+            free( msg );
+            #else
             MI_CpuSend32(&bbcmd1[0],
                          &reg_G3X_GXFIFO,
                          18 * sizeof(u32));
+            #endif
         }
     }
 

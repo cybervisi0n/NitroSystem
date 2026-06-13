@@ -7,6 +7,9 @@
 extern "C" {
 #endif
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNSi_G2dDmaCopy16 (u32 dmaNo, const void * src, void * dest, u32 size)
 {
     if (dmaNo != GX_DMA_NOT_USE) {
@@ -16,6 +19,9 @@ NNS_G2D_INLINE void NNSi_G2dDmaCopy16 (u32 dmaNo, const void * src, void * dest,
     }
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNSi_G2dDmaFill32 (u32 dmaNo, void * dest, u32 data, u32 size)
 {
     if (dmaNo != GX_DMA_NOT_USE) {

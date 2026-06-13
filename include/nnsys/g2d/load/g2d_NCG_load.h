@@ -11,9 +11,18 @@ extern "C" {
 #endif
 
 BOOL NNS_G2dGetUnpackedCharacterData(void * pNcgrFile, NNSG2dCharacterData ** ppCharData);
+#ifdef SDK_PORT
+void WIN_CheckAndFreeCharData(void * start, void * end);
+NNSG2dCharacterData* NNS_G2dUnpackNCG(NNSG2dCharacterData* pCharData);
+#else
 void NNS_G2dUnpackNCG(NNSG2dCharacterData * pCharData);
+#endif
 BOOL NNS_G2dGetUnpackedBGCharacterData(void * pNcgrFile, NNSG2dCharacterData ** ppCharData);
+#ifdef SDK_PORT
+NNSG2dCharacterData* NNS_G2dUnpackBGNCG(NNSG2dCharacterData* pCharData);
+#else
 void NNS_G2dUnpackBGNCG(NNSG2dCharacterData * pCharData);
+#endif
 BOOL NNS_G2dGetUnpackedCharacterPosInfo(void * pNcgrFile, NNSG2dCharacterPosInfo ** ppCharPosInfo);
 
 #ifdef __SNC__

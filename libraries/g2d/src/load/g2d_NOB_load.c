@@ -5,6 +5,55 @@
 
 #include "g2di_Debug.h"
 
+#ifdef SDK_PORT
+#define NOB_ALLOCATED_CELL_BANKS_MAX 2048
+typedef struct {
+    void * origAddr;
+    void * mallocAddr;
+} WIN_NOB_malloc_t;
+static WIN_NOB_malloc_t s_allocatedCellBanksTbl[NOB_ALLOCATED_CELL_BANKS_MAX] = {0};
+
+static void WIN_FreeCellBank( NNSG2dCellDataBank * pCellBank );
+static void WIN_RegisterCellBank( NNSG2dCellDataBank ** ppCellBank );
+
+static void WIN_FreeCellBank(NNSG2dCellDataBank * pCellBank)
+{
+    free(pCellBank->pCellDataArrayHead);
+    free(pCellBank);
+    return;
+}
+
+static void WIN_RegisterCellBank(NNSG2dCellDataBank ** ppCellBank )
+{
+    for(int i=0; i < NOB_ALLOCATED_CELL_BANKS_MAX; i++)
+    {
+        if(s_allocatedCellBanksTbl[i].origAddr == NULL)
+        {
+            s_allocatedCellBanksTbl[i].origAddr = ppCellBank;
+            s_allocatedCellBanksTbl[i].mallocAddr = *ppCellBank;
+            break;
+        }
+    }
+}
+
+void WIN_CheckAndFreeCellBank(void * start, void * end)
+{
+    u64 start64 = (u64)start;
+    u64 end64 = (u64)end;
+    for(int i=0; i < NOB_ALLOCATED_CELL_BANKS_MAX; i++)
+    {
+        if((u64)s_allocatedCellBanksTbl[i].origAddr > start64 && (u64)s_allocatedCellBanksTbl[i].origAddr < end64)
+        {
+            NNSG2dCellDataBank * bank = s_allocatedCellBanksTbl[i].mallocAddr;
+            WIN_FreeCellBank(bank);
+            s_allocatedCellBanksTbl[i].origAddr = NULL;
+            s_allocatedCellBanksTbl[i].mallocAddr = NULL;
+            break;
+        }
+    }
+}
+#endif
+
 static void * GetPtrOamArrayHead_ (NNSG2dCellDataBank * pCellBank)
 {
     NNS_G2D_NULL_ASSERT(pCellBank);
@@ -47,9 +96,15 @@ BOOL NNS_G2dGetUnpackedCellBank (void * pNcerFile, NNSG2dCellDataBank ** ppCellB
                 (NNSG2dCellDataBankBlock *)NNS_G2dFindBinaryBlock(pBinFile,
                                                                   NNS_G2D_BLKSIG_CELLBANK);
             if (pBinBlk) {
+                #ifdef SDK_PORT
+                *ppCellBank = NNS_G2dUnpackNCE( (void*)&pBinBlk->cellDataBank );
+                WIN_RegisterCellBank(ppCellBank);
+                return TRUE;
+                #else
                 NNS_G2dUnpackNCE((void *)&pBinBlk->cellDataBank);
                 *ppCellBank = &pBinBlk->cellDataBank;
                 return TRUE;
+                #endif
             } else {
                 *ppCellBank = NULL;
                 return FALSE;
@@ -76,9 +131,171 @@ const NNSG2dCellData * NNS_G2dGetCellDataByIdx (const NNSG2dCellDataBank * pCell
     }
 }
 
+#ifdef SDK_PORT
+#define NOB_CELL_DATA_MAX 256
+#define NOB_CELL_ARRAY_SIZE_MAX 1024
+#define NOB_USER_EX_DATA_OUT_MAX NOB_CELL_DATA_MAX
+#define NOB_USER_EX_DATA_ATTR_MAX 128
+static NNSG2dCellDataBank cellDataOuts[NOB_CELL_DATA_MAX] = {0};
+static u32 curCellDataOut = 0;
+static u8 cellDataArrayOuts[NOB_CELL_DATA_MAX][sizeof(NNSG2dCellData) * NOB_CELL_ARRAY_SIZE_MAX] = {0};
+static NNSG2dVramTransferData vramTransferOuts[NOB_CELL_DATA_MAX] = {0};
+static u32 curVramTransferOut = 0;
+
+typedef struct WIN_NOBUserExData
+{
+    NNSG2dUserExDataBlock blk;
+    NNSG2dUserExCellAttrBank cellAttrBank;
+}WIN_NOBUserExData;
+
+static WIN_NOBUserExData userExDataOuts[NOB_USER_EX_DATA_OUT_MAX];
+static u8 userExAttrArrayOuts[NOB_USER_EX_DATA_OUT_MAX][sizeof(NNSG2dUserExCellAttr) * NOB_USER_EX_DATA_ATTR_MAX];
+static u32 curUserExDataOut = 0;
+
+
+NNSG2dCellDataBank* NNS_G2dUnpackNCE( NNSG2dCellDataBank* pCellData )
+#else
 void NNS_G2dUnpackNCE (NNSG2dCellDataBank * pCellData)
+#endif
 {
     NNS_G2D_NULL_ASSERT(pCellData);
+
+    #ifdef SDK_PORT
+    NNSG2dCellDataBank * pCellDataOut;
+    WIN_NNSG2dCellDataBank * pCellDataWin;
+    pCellDataWin = (WIN_NNSG2dCellDataBank *)pCellData;
+    pCellDataOut = malloc( sizeof( NNSG2dCellDataBank ) );
+    //pCellDataOut = &cellDataOuts[curCellDataOut];
+
+    memset( pCellDataOut, 0, sizeof( NNSG2dCellDataBank ) );
+
+    pCellDataOut->numCells = pCellDataWin->numCells;
+    pCellDataOut->cellBankAttr = pCellDataWin->cellBankAttr;
+    pCellDataOut->mappingMode = pCellDataWin->mappingMode;
+
+    //pCellDataOut->pCellDataArrayHead = (void*)((u64)pCellDataOut + (u64)pCellDataWin->pCellDataArrayHead);
+    pCellDataOut->pCellDataArrayHead = malloc(sizeof(NNSG2dCellDataWithBR) * pCellDataOut->numCells);
+    //pCellDataOut->pCellDataArrayHead = (void *)cellDataArrayOuts[curCellDataOut];
+
+    curCellDataOut++;
+    if(curCellDataOut >= NOB_CELL_DATA_MAX )
+    {
+        curCellDataOut = 0;
+    }
+
+    WIN_NNSG2dCellData * pCellWin;
+    WIN_NNSG2dCellDataWithBR * pCellWinBr;
+
+    WIN_NNSG2dCellDataBank* pCellDataArrayHeadWin = NULL;
+    pCellDataArrayHeadWin = (void*)((u64)pCellDataWin + (u64)pCellDataWin->pCellDataArrayHead);
+
+    void* pHeadOfOAMData;
+
+    if(pCellDataOut->cellBankAttr & NNS_G2D_CELLBK_ATTR_CELLWITHBR)
+    {
+        pCellWinBr = (WIN_NNSG2dCellDataWithBR *)((u64)pCellDataArrayHeadWin);
+        //pHeadOfOAMData = (void*)(&pCellWinBr->cellData) + 4;
+        pHeadOfOAMData = pCellWinBr + pCellDataWin->numCells;
+        //pHeadOfOAMData = &pCellWinBr->cellData + pCellDataWin->numCells;
+    }
+    else
+    {
+        pHeadOfOAMData = (WIN_NNSG2dCellData *)pCellDataArrayHeadWin + pCellDataWin->numCells;
+    }
+
+    u32 i;
+    NNSG2dCellData* pCellOut = NULL;
+    
+    
+    void * pCellWinPtr = NULL;
+
+    for( i=0; i < pCellDataOut->numCells; i++ )
+    {
+        if(pCellDataOut->cellBankAttr & NNS_G2D_CELLBK_ATTR_CELLWITHBR)
+        {
+            pCellWinBr = (WIN_NNSG2dCellDataWithBR *)((u64)pCellDataArrayHeadWin) + i;
+            pCellWin = (WIN_NNSG2dCellData *)pCellWinBr;
+            
+
+
+        } else {
+            pCellWin = (WIN_NNSG2dCellData *)((u64)pCellDataArrayHeadWin) + i;
+        }
+        pCellOut = (NNSG2dCellData*)(NNS_G2dGetCellDataByIdx( pCellDataOut, i ));
+        pCellOut->numOAMAttrs = pCellWin->numOAMAttrs;
+        pCellOut->cellAttr = pCellWin->cellAttr;
+        pCellOut->pOamAttrArray = (void *)((u64)pHeadOfOAMData + (u64)pCellWin->pOamAttrArray);
+
+        if(pCellDataOut->cellBankAttr & NNS_G2D_CELLBK_ATTR_CELLWITHBR)
+        {
+            NNSG2dCellDataWithBR * pCellOutBr;
+            pCellOutBr = (NNSG2dCellDataWithBR*)pCellOut;
+            pCellOutBr->boundingRect.maxX = pCellWinBr->boundingRect.maxX;
+            pCellOutBr->boundingRect.maxY = pCellWinBr->boundingRect.maxY;
+            pCellOutBr->boundingRect.minX = pCellWinBr->boundingRect.minX;
+            pCellOutBr->boundingRect.minY = pCellWinBr->boundingRect.minY;
+        }
+
+    //    //pCellOut->pOamAttrArray = (void *)((u64)
+    //    
+    }
+
+    if( pCellDataWin->pVramTransferData != 0 )
+    {
+        WIN_NNSG2dVramTransferData * pVramTsfmDataWin;
+        NNSG2dVramTransferData* pVramTsfmDataOut;
+        pVramTsfmDataWin = (void *)((u64)pCellDataWin + (u64)pCellDataWin->pVramTransferData);
+        //pVramTsfmDataOut = malloc( sizeof( NNSG2dVramTransferData ) );
+        pVramTsfmDataOut = &vramTransferOuts[curVramTransferOut];
+        curVramTransferOut++;
+        if(curVramTransferOut >= NOB_CELL_DATA_MAX )
+        {
+        curVramTransferOut = 0;
+        }
+
+        pVramTsfmDataOut->szByteMax = pVramTsfmDataWin->szByteMax;
+        pVramTsfmDataOut->pCellTransferDataArray = (void *)((u64)pVramTsfmDataWin + (u64)pVramTsfmDataWin->pCellTransferDataArray);
+        pCellDataOut->pVramTransferData = pVramTsfmDataOut;
+    }
+
+    if( pCellDataWin->pExtendedData != 0 )
+    {
+        {
+            NNSG2dUserExDataBlock * pBlkWin = (NNSG2dUserExDataBlock*)((u64)pCellDataWin + (u64)pCellDataWin->pExtendedData);
+            WIN_NNSG2dUserExCellAttrBank * pCellAttrBankWin;
+            pCellAttrBankWin = (WIN_NNSG2dUserExCellAttrBank*)(pBlkWin+1);
+            WIN_NNSG2dUserExCellAttr * pCellAttrArrayWin;
+            pCellAttrArrayWin = (WIN_NNSG2dUserExCellAttr *)((u64)pCellAttrBankWin + pCellAttrBankWin->pCellAttrArray);
+            pCellDataOut->pExtendedData = &userExDataOuts[curUserExDataOut];
+
+            NNSG2dUserExDataBlock * pBlk;
+            pBlk = (NNSG2dUserExDataBlock *)pCellDataOut->pExtendedData;
+            pBlk->blkTypeID = pBlkWin->blkTypeID;
+            pBlk->blkSize = pBlkWin->blkSize;
+            
+            NNSG2dUserExCellAttrBank * pCellAttrBank;
+            pCellAttrBank = (NNSG2dUserExCellAttrBank *)(pBlk + 1);
+            pCellAttrBank->numCells = pCellAttrBankWin->numCells;
+            pCellAttrBank->numAttribute = pCellAttrBankWin->numAttribute;
+
+            NNSG2dUserExCellAttr * pCellAttrArray;
+            pCellAttrArray = (NNSG2dUserExCellAttr *)(&userExAttrArrayOuts[curUserExDataOut]);
+            
+            pCellAttrBank->pCellAttrArray = pCellAttrArray;
+
+            for( i=0; i < pCellAttrBank->numCells; i++ ) {
+                pCellAttrArray[i].pAttr = (u32 *)((u64)pCellAttrBankWin + (u64)pCellAttrArrayWin[i].pAttr);
+            }
+            curUserExDataOut++;
+            if( curUserExDataOut > NOB_USER_EX_DATA_OUT_MAX )
+            {
+                curUserExDataOut = 0;
+            }
+        }
+    }
+
+    return pCellDataOut;
+    #else
     {
         pCellData->pCellDataArrayHead = NNS_G2D_UNPACK_OFFSET_PTR(pCellData->pCellDataArrayHead, pCellData);
 
@@ -106,6 +323,7 @@ void NNS_G2dUnpackNCE (NNSG2dCellDataBank * pCellData)
         }
 
     }
+    #endif
 
     NNSI_G2D_DEBUGMSG0("Unpacking NCER file is successful.\n");
 }

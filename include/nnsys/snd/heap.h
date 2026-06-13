@@ -14,13 +14,21 @@ extern "C" {
 
 struct NNSSndHeap;
 
+#ifdef SDK_PORT
+typedef void (*NNSSndHeapDisposeCallback)(void * mem, u32 size, u64 data1, u32 data2);
+#else
 typedef void (*NNSSndHeapDisposeCallback)(void * mem, u32 size, u32 data1, u32 data2);
+#endif
 typedef struct NNSSndHeap * NNSSndHeapHandle;
 
 NNSSndHeapHandle NNS_SndHeapCreate(void * startAddress, u32 size);
 void NNS_SndHeapDestroy(NNSSndHeapHandle heap);
 
+#ifdef SDK_PORT
+void * NNS_SndHeapAlloc(NNSSndHeapHandle heap, u32 size, NNSSndHeapDisposeCallback callback, u64 data1, u32 data2);
+#else
 void * NNS_SndHeapAlloc(NNSSndHeapHandle heap, u32 size, NNSSndHeapDisposeCallback callback, u32 data1, u32 data2);
+#endif
 void NNS_SndHeapClear(NNSSndHeapHandle heap);
 
 int NNS_SndHeapSaveState(NNSSndHeapHandle heap);

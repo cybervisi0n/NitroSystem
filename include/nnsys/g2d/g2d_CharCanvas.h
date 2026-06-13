@@ -117,11 +117,17 @@ void NNS_G2dMapScrToCharAffine(void * areaBase, int areaWidth, int areaHeight, N
 void NNS_G2dMapScrToChar256x16Pltt(void * areaBase, int areaWidth, int areaHeight, NNSG2d256x16PlttBGWidth scnWidth, int charNo, int cplt);
 int NNSi_G2dCalcRequiredOBJ(int areaWidth, int areaHeight);
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE int NNS_G2dCalcRequiredOBJ1D (int areaWidth, int areaHeight)
 {
     return NNSi_G2dCalcRequiredOBJ(areaWidth, areaHeight);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE int NNS_G2dCalcRequiredOBJ2DRect (int areaWidth, int areaHeight)
 {
     return NNSi_G2dCalcRequiredOBJ(areaWidth, areaHeight);
@@ -131,18 +137,27 @@ int NNS_G2dArrangeOBJ1D(GXOamAttr * oam, int areaWidth, int areaHeight, int x, i
 int NNS_G2dArrangeOBJ2DRect(GXOamAttr * oam, int areaWidth, int areaHeight, int x, int y, GXOamColorMode color, int charName);
 int NNS_G2dCharCanvasDrawChar(const NNSG2dCharCanvas * pCC, const NNSG2dFont * pFont, int x, int y, int cl, u16 ccode);
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dCharCanvasDrawGlyph (const NNSG2dCharCanvas * pCC, const NNSG2dFont * pFont, int x, int y, int cl, const NNSG2dGlyph * pGlyph)
 {
     NNS_G2D_CHARCANVAS_ASSERT(pCC);
     pCC->vtable->pDrawGlyph(pCC, pFont, x, y, cl, pGlyph);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dCharCanvasClear (const NNSG2dCharCanvas * pCC, int cl)
 {
     NNS_G2D_CHARCANVAS_ASSERT(pCC);
     pCC->vtable->pClear(pCC, cl);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dCharCanvasClearArea (const NNSG2dCharCanvas * pCC, int cl, int x, int y, int w, int h)
 {
     NNS_G2D_CHARCANVAS_ASSERT(pCC);
@@ -155,6 +170,9 @@ void NNS_G2dCharCanvasInitForOBJ2DRect(NNSG2dCharCanvas * pCC, void * charBase, 
 void NNS_G2dCharCanvasMakeCell1D(NNSG2dCellData * pCell, const NNSG2dCharCanvas * pCC, int x, int y, int priority, GXOamMode mode, BOOL mosaic, GXOamEffect effect, GXOamColorMode color, int charName, int cParam, NNSG2dOBJVramMode vramMode, BOOL makeBR);
 void NNS_G2dCharCanvasMakeCell2DRect(NNSG2dCellData * pCell, const NNSG2dCharCanvas * pCC, int x, int y, int priority, GXOamMode mode, BOOL mosaic, GXOamEffect effect, GXOamColorMode color, int charName, int cParam, BOOL makeBR);
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE size_t NNSi_G2dCharCanvasCalcCellDataSize (const NNSG2dCharCanvas * pCC, BOOL makeBR)
 {
     const int numObj = NNSi_G2dCalcRequiredOBJ(pCC->areaWidth, pCC->areaHeight);
@@ -164,11 +182,17 @@ NNS_G2D_INLINE size_t NNSi_G2dCharCanvasCalcCellDataSize (const NNSG2dCharCanvas
     return sizeof(NNSG2dCellData) + brSize + oamSize;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE size_t NNS_G2dCharCanvasCalcCellDataSize1D (const NNSG2dCharCanvas * pCC, BOOL makeBR)
 {
     return NNSi_G2dCharCanvasCalcCellDataSize(pCC, makeBR);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE size_t NNS_G2dCharCanvasCalcCellDataSize2DRect (const NNSG2dCharCanvas * pCC, BOOL makeBR)
 {
     return NNSi_G2dCharCanvasCalcCellDataSize(pCC, makeBR);

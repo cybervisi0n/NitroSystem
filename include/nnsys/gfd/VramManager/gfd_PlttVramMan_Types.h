@@ -28,16 +28,25 @@ typedef int (*NNSGfdFuncFreePlttVram)(NNSGfdPlttKey plttKey);
 extern NNSGfdFuncAllocPlttVram NNS_GfdDefaultFuncAllocPlttVram;
 extern NNSGfdFuncFreePlttVram NNS_GfdDefaultFuncFreePlttVram;
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_GFD_INLINE NNSGfdPlttKey NNS_GfdAllocPlttVram (u32 szByte, BOOL is4pltt, u32 opt)
 {
     return (*NNS_GfdDefaultFuncAllocPlttVram)(szByte, is4pltt, opt);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_GFD_INLINE int NNS_GfdFreePlttVram (NNSGfdPlttKey plttKey)
 {
     return (*NNS_GfdDefaultFuncFreePlttVram)(plttKey);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_GFD_INLINE u32 NNSi_GfdGetPlttKeyRoundupSize (u32 size)
 {
     if (size == 0) {
@@ -47,6 +56,9 @@ NNS_GFD_INLINE u32 NNSi_GfdGetPlttKeyRoundupSize (u32 size)
     }
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_GFD_INLINE NNSGfdPlttKey NNS_GfdMakePlttKey (u32 addr, u32 size)
 {
     SDK_ASSERT((addr & (u32)((0x1 << NNS_GFD_PLTTKEY_ADDR_SHIFT) - 1)) == 0);
@@ -59,11 +71,17 @@ NNS_GFD_INLINE NNSGfdPlttKey NNS_GfdMakePlttKey (u32 addr, u32 size)
            | (0xFFFF & (addr >> NNS_GFD_PLTTKEY_ADDR_SHIFT));
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_GFD_INLINE u32 NNS_GfdGetPlttKeyAddr (NNSGfdPlttKey plttKey)
 {
     return (u32)((0x0000FFFF & plttKey) << NNS_GFD_PLTTKEY_ADDR_SHIFT);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_GFD_INLINE u32 NNS_GfdGetPlttKeySize (NNSGfdPlttKey plttKey)
 {
     return (u32)(((0xFFFF0000 & plttKey) >> 16) << NNS_GFD_PLTTKEY_SIZE_SHIFT);

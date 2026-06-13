@@ -55,84 +55,126 @@ void NNS_G2dFontInitCP1252(NNSG2dFont * pFont, void * pNftrFile);
 u16 NNS_G2dFontFindGlyphIndex(const NNSG2dFont * pFont, u16 c);
 const NNSG2dCharWidths * NNS_G2dFontGetCharWidthsFromIndex(const NNSG2dFont * pFont, u16 idx);
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE NNSG2dFontType NNS_G2dFontGetType (const NNSG2dFont * pFont)
 {
     NNS_G2D_FONT_ASSERT(pFont);
     return (NNSG2dFontType)pFont->pRes->fontType;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE s8 NNS_G2dFontGetLineFeed (const NNSG2dFont * pFont)
 {
     NNS_G2D_FONT_ASSERT(pFont);
     return pFont->pRes->linefeed;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE u16 NNS_G2dFontGetAlternateGlyphIndex (const NNSG2dFont * pFont)
 {
     NNS_G2D_FONT_ASSERT(pFont);
     return pFont->pRes->alterCharIndex;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE NNSG2dCharWidths * NNS_G2dFontGetDefaultCharWidths (const NNSG2dFont * pFont)
 {
     NNS_G2D_FONT_ASSERT(pFont);
     return &pFont->pRes->defaultWidth;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE u8 NNS_G2dFontGetHeight (const NNSG2dFont * pFont)
 {
     NNS_G2D_FONT_ASSERT(pFont);
     return pFont->pRes->pGlyph->cellHeight;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE u8 NNS_G2dFontGetCellHeight (const NNSG2dFont * pFont)
 {
     NNS_G2D_FONT_ASSERT(pFont);
     return pFont->pRes->pGlyph->cellHeight;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE u8 NNS_G2dFontGetCellWidth (const NNSG2dFont * pFont)
 {
     NNS_G2D_FONT_ASSERT(pFont);
     return pFont->pRes->pGlyph->cellWidth;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE int NNS_G2dFontGetBaselinePos (const NNSG2dFont * pFont)
 {
     NNS_G2D_FONT_ASSERT(pFont);
     return pFont->pRes->pGlyph->baselinePos;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE int NNSi_G2dFontGetGlyphDataSize (const NNSG2dFont * pFont)
 {
     NNS_G2D_FONT_ASSERT(pFont);
     return pFont->pRes->pGlyph->cellSize;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE u8 NNS_G2dFontGetMaxCharWidth (const NNSG2dFont * pFont)
 {
     NNS_G2D_FONT_ASSERT(pFont);
     return pFont->pRes->pGlyph->maxCharWidth;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE u8 NNS_G2dFontGetBpp (const NNSG2dFont * pFont)
 {
     NNS_G2D_FONT_ASSERT(pFont);
     return pFont->pRes->pGlyph->bpp;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE NNSG2dFontEncoding NNSi_G2dFontGetEncoding (const NNSG2dFont * pFont)
 {
     NNS_G2D_FONT_ASSERT(pFont);
     return (NNSG2dFontEncoding)pFont->pRes->encoding;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE NNSiG2dSplitCharCallback NNSi_G2dFontGetSpliter (const NNSG2dFont * pFont)
 {
     NNS_G2D_FONT_ASSERT(pFont);
     return pFont->cbCharSpliter;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE const u8 * NNS_G2dFontGetGlyphImageFromIndex (const NNSG2dFont * pFont, u16 idx)
 {
     NNS_G2D_FONT_ASSERT(pFont);
@@ -140,24 +182,36 @@ NNS_G2D_INLINE const u8 * NNS_G2dFontGetGlyphImageFromIndex (const NNSG2dFont * 
     return pFont->pRes->pGlyph->glyphTable + idx * NNSi_G2dFontGetGlyphDataSize(pFont);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE u8 NNS_G2dFontGetFlags (const NNSG2dFont * pFont)
 {
     NNS_G2D_FONT_ASSERT(pFont);
     return pFont->pRes->pGlyph->flags;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dFontSetLineFeed (NNSG2dFont * pFont, s8 linefeed)
 {
     NNS_G2D_FONT_ASSERT(pFont);
     pFont->pRes->linefeed = linefeed;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dFontSetDefaultCharWidths (NNSG2dFont * pFont, NNSG2dCharWidths cw)
 {
     NNS_G2D_FONT_ASSERT(pFont);
     pFont->pRes->defaultWidth = cw;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dFontSetAlternateGlyphIndex (NNSG2dFont * pFont, u16 idx)
 {
     NNS_G2D_FONT_ASSERT(pFont);
@@ -165,12 +219,18 @@ NNS_G2D_INLINE void NNS_G2dFontSetAlternateGlyphIndex (NNSG2dFont * pFont, u16 i
     pFont->pRes->alterCharIndex = idx;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE u16 NNS_G2dFontGetGlyphIndex (const NNSG2dFont * pFont, u16 c)
 {
     const u16 idx = NNS_G2dFontFindGlyphIndex(pFont, c);
     return (idx != NNS_G2D_GLYPH_INDEX_NOT_FOUND) ? idx : pFont->pRes->alterCharIndex;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dFontGetGlyphFromIndex (NNSG2dGlyph * pGlyph, const NNSG2dFont * pFont, u16 idx)
 {
     NNS_G2D_FONT_ASSERT(pFont);
@@ -179,6 +239,9 @@ NNS_G2D_INLINE void NNS_G2dFontGetGlyphFromIndex (NNSG2dGlyph * pGlyph, const NN
     pGlyph->image = NNS_G2dFontGetGlyphImageFromIndex(pFont, idx);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE const NNSG2dCharWidths * NNS_G2dFontGetCharWidths (const NNSG2dFont * pFont, u16 c)
 {
     u16 iGlyph;
@@ -189,6 +252,9 @@ NNS_G2D_INLINE const NNSG2dCharWidths * NNS_G2dFontGetCharWidths (const NNSG2dFo
     return NNS_G2dFontGetCharWidthsFromIndex(pFont, iGlyph);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE int NNS_G2dFontGetCharWidth (const NNSG2dFont * pFont, u16 c)
 {
     const NNSG2dCharWidths * pWidths;
@@ -199,6 +265,9 @@ NNS_G2D_INLINE int NNS_G2dFontGetCharWidth (const NNSG2dFont * pFont, u16 c)
     return pWidths->charWidth;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE int NNS_G2dFontGetCharWidthFromIndex (const NNSG2dFont * pFont, u16 idx)
 {
     const NNSG2dCharWidths * pWidths;
@@ -209,6 +278,9 @@ NNS_G2D_INLINE int NNS_G2dFontGetCharWidthFromIndex (const NNSG2dFont * pFont, u
     return pWidths->charWidth;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE const u8 * NNS_G2dFontGetGlyphImage (const NNSG2dFont * pFont, u16 c)
 {
     u16 iGlyph;
@@ -219,6 +291,9 @@ NNS_G2D_INLINE const u8 * NNS_G2dFontGetGlyphImage (const NNSG2dFont * pFont, u1
     return NNS_G2dFontGetGlyphImageFromIndex(pFont, iGlyph);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dFontGetGlyph (NNSG2dGlyph * pGlyph, const NNSG2dFont * pFont, u16 ccode)
 {
     u16 iGlyph;
@@ -230,6 +305,9 @@ NNS_G2D_INLINE void NNS_G2dFontGetGlyph (NNSG2dGlyph * pGlyph, const NNSG2dFont 
     NNS_G2dFontGetGlyphFromIndex(pGlyph, pFont, iGlyph);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE BOOL NNS_G2dFontSetAlternateChar (NNSG2dFont * pFont, u16 c)
 {
     u16 iGlyph;
@@ -251,21 +329,33 @@ int NNSi_G2dFontGetTextHeight(const NNSG2dFont * pFont, int vSpace, const void *
 int NNSi_G2dFontGetTextWidth(const NNSG2dFont * pFont, int hSpace, const void * txt);
 NNSG2dTextRect NNSi_G2dFontGetTextRect(const NNSG2dFont * pFont, int hSpace, int vSpace, const void * txt);
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE int NNS_G2dFontGetStringWidth (const NNSG2dFont * pFont, int hSpace, const NNSG2dChar * str, const NNSG2dChar ** pPos)
 {
     return NNSi_G2dFontGetStringWidth(pFont, hSpace, str, (const void **)pPos);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE int NNS_G2dFontGetTextHeight (const NNSG2dFont * pFont, int vSpace, const NNSG2dChar * txt)
 {
     return NNSi_G2dFontGetTextHeight(pFont, vSpace, txt);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE int NNS_G2dFontGetTextWidth (const NNSG2dFont * pFont, int hSpace, const NNSG2dChar * txt)
 {
     return NNSi_G2dFontGetTextWidth(pFont, hSpace, txt);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE NNSG2dTextRect NNS_G2dFontGetTextRect (const NNSG2dFont * pFont, int hSpace, int vSpace, const NNSG2dChar * txt)
 {
     return NNSi_G2dFontGetTextRect(pFont, hSpace, vSpace, txt);

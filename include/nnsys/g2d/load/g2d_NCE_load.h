@@ -11,7 +11,12 @@ extern "C" {
 #endif
 
 BOOL NNS_G2dGetUnpackedCellBank(void * pNcerFile, NNSG2dCellDataBank ** ppCellBank);
+#ifdef SDK_PORT
+void WIN_CheckAndFreeCellBank(void * start, void * end);
+NNSG2dCellDataBank * NNS_G2dUnpackNCE(NNSG2dCellDataBank * pCellData);
+#else
 void NNS_G2dUnpackNCE(NNSG2dCellDataBank * pCellData);
+#endif
 const NNSG2dCellData * NNS_G2dGetCellDataByIdx(const NNSG2dCellDataBank * pCellData, u16 idx);
 
 #ifdef __SNC__

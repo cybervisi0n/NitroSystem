@@ -70,17 +70,26 @@ typedef struct NNSG2dUserExMultiCellAttrBank {
     NNSG2dUserExMultiCellAttr * pMCAttrArray;
 } NNSG2dUserExMultiCellAttrBank;
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNSi_G2dSetMultiCellNodeAttribute (NNSG2dMCAnimationPlayMode mode, int bVisibility, u16 * pDstAttr)
 {
     *pDstAttr = (u16)(((mode & NNS_G2D_MCNODE_PLAYMODE_MASK) << NNS_G2D_MCNODE_PLAYMODE_SHIFT) |
                       ((bVisibility & 0x1) << NNS_G2D_MCNODE_VISIBILITY_SHIFT));
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE BOOL NNSi_G2dIsMultiCellNodeVisible (const NNSG2dMultiCellHierarchyData * pNode)
 {
     return (BOOL)((pNode->nodeAttr >> NNS_G2D_MCNODE_VISIBILITY_SHIFT) & 0x1);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE NNSG2dMCAnimationPlayMode NNSi_G2dGetMultiCellNodePlayMode (const NNSG2dMultiCellHierarchyData * pNode)
 {
     const NNSG2dMCAnimationPlayMode mode
@@ -90,17 +99,26 @@ NNS_G2D_INLINE NNSG2dMCAnimationPlayMode NNSi_G2dGetMultiCellNodePlayMode (const
     return mode;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNSi_G2dSetMC2NodeCellAinmIdx (NNSG2dMultiCellHierarchyData * pNodeData, u8 idx)
 {
     pNodeData->nodeAttr &= ~NNS_G2D_MCNODE_CELLANIMIDX_MASK;
     pNodeData->nodeAttr |= idx << NNS_G2D_MCNODE_CELLANIMIDX_SHIFT;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE u16 NNSi_G2dGetMC2NodeCellAinmIdx (const NNSG2dMultiCellHierarchyData * pNodeData)
 {
     return (u16)((NNS_G2D_MCNODE_CELLANIMIDX_MASK & pNodeData->nodeAttr) >> NNS_G2D_MCNODE_CELLANIMIDX_SHIFT);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE const NNSG2dUserExCellAttrBank * NNS_G2dGetUserExCellAttrBankFromMCBank (const NNSG2dMultiCellDataBank * pMCBank)
 {
 

@@ -6,6 +6,14 @@ extern "C" {
 #endif
 
 #ifndef NNS_G3D_SBC_CALLBACK_TIMING_A_DISABLE
+#ifdef SDK_PORT
+static NNS_G3D_INLINE NNSG3dSbcCallBackTiming
+NNSi_CheckPossibilityOfCallBack(NNSG3dRS* rs, u8 cmd);
+#endif
+
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE BOOL NNSi_G3dCallBackCheck_A (NNSG3dRS * rs, u8 cmd, NNSG3dSbcCallBackTiming * pTiming)
 {
     *pTiming = NNSi_CheckPossibilityOfCallBack(rs, cmd);
@@ -20,6 +28,9 @@ NNS_G3D_INLINE BOOL NNSi_G3dCallBackCheck_A (NNSG3dRS * rs, u8 cmd, NNSG3dSbcCal
     }
 }
 #else
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE BOOL NNSi_G3dCallBackCheck_A (NNSG3dRS * rs, u8 cmd, NNSG3dSbcCallBackTiming * pTiming)
 {
 
@@ -29,6 +40,9 @@ NNS_G3D_INLINE BOOL NNSi_G3dCallBackCheck_A (NNSG3dRS * rs, u8 cmd, NNSG3dSbcCal
 #endif
 
 #ifndef NNS_G3D_SBC_CALLBACK_TIMING_B_DISABLE
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE BOOL NNSi_G3dCallBackCheck_B (NNSG3dRS * rs, u8 cmd, NNSG3dSbcCallBackTiming * pTiming)
 {
     if (*pTiming == NNS_G3D_SBC_CALLBACK_TIMING_B) {
@@ -42,12 +56,18 @@ NNS_G3D_INLINE BOOL NNSi_G3dCallBackCheck_B (NNSG3dRS * rs, u8 cmd, NNSG3dSbcCal
     }
 }
 #else
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE BOOL NNSi_G3dCallBackCheck_B (NNSG3dRS *, u8, NNSG3dSbcCallBackTiming *) {
     return FALSE;
 }
 #endif
 
 #ifndef NNS_G3D_SBC_CALLBACK_TIMING_C_DISABLE
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE BOOL NNSi_G3dCallBackCheck_C (NNSG3dRS * rs, u8 cmd, NNSG3dSbcCallBackTiming timing)
 {
     if (timing == NNS_G3D_SBC_CALLBACK_TIMING_C) {
@@ -60,11 +80,17 @@ NNS_G3D_INLINE BOOL NNSi_G3dCallBackCheck_C (NNSG3dRS * rs, u8 cmd, NNSG3dSbcCal
     }
 }
 #else
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE BOOL NNSi_G3dCallBackCheck_C (NNSG3dRS *, u8, NNSG3dSbcCallBackTiming) {
     return FALSE;
 }
 #endif
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE NNSG3dSbcCallBackTiming NNSi_CheckPossibilityOfCallBack (NNSG3dRS * rs, u8 cmd)
 {
     if (rs->cbVecFunc[cmd]) {
@@ -74,6 +100,9 @@ NNS_G3D_INLINE NNSG3dSbcCallBackTiming NNSi_CheckPossibilityOfCallBack (NNSG3dRS
     }
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dRSSetCallBack (NNSG3dRS * rs, NNSG3dSbcCallBackFunc func, u8 cmd, NNSG3dSbcCallBackTiming timing)
 {
     NNS_G3D_NULL_ASSERT(rs);
@@ -84,6 +113,9 @@ NNS_G3D_INLINE void NNS_G3dRSSetCallBack (NNSG3dRS * rs, NNSG3dSbcCallBackFunc f
     rs->cbVecTiming[cmd] = timing;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dRSResetCallBack (NNSG3dRS * rs, u8 cmd)
 {
     NNS_G3D_NULL_ASSERT(rs);
@@ -93,48 +125,72 @@ NNS_G3D_INLINE void NNS_G3dRSResetCallBack (NNSG3dRS * rs, u8 cmd)
     rs->cbVecTiming[cmd] = (u8)NNS_G3D_SBC_CALLBACK_TIMING_NONE;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE NNSG3dRenderObj * NNS_G3dRSGetRenderObj (NNSG3dRS * rs)
 {
     NNS_G3D_NULL_ASSERT(rs);
     return rs->pRenderObj;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE NNSG3dMatAnmResult * NNS_G3dRSGetMatAnmResult (NNSG3dRS * rs)
 {
     NNS_G3D_NULL_ASSERT(rs);
     return rs->pMatAnmResult;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE NNSG3dJntAnmResult * NNS_G3dRSGetJntAnmResult (NNSG3dRS * rs)
 {
     NNS_G3D_NULL_ASSERT(rs);
     return rs->pJntAnmResult;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE NNSG3dVisAnmResult * NNS_G3dRSGetVisAnmResult (NNSG3dRS * rs)
 {
     NNS_G3D_NULL_ASSERT(rs);
     return rs->pVisAnmResult;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE u8 * NNS_G3dRSGetSbcPtr (NNSG3dRS * rs)
 {
     NNS_G3D_NULL_ASSERT(rs);
     return rs->c;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dRSSetFlag (NNSG3dRS * rs, NNSG3dRSFlag flag)
 {
     NNS_G3D_NULL_ASSERT(rs);
     rs->flag |= flag;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dRSResetFlag (NNSG3dRS * rs, NNSG3dRSFlag flag)
 {
     NNS_G3D_NULL_ASSERT(rs);
     rs->flag &= ~flag;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE int NNS_G3dRSGetCurrentMatID (const NNSG3dRS * rs)
 {
     NNS_G3D_NULL_ASSERT(rs);
@@ -145,6 +201,9 @@ NNS_G3D_INLINE int NNS_G3dRSGetCurrentMatID (const NNSG3dRS * rs)
     }
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE int NNS_G3dRSGetCurrentNodeID (const NNSG3dRS * rs)
 {
     NNS_G3D_NULL_ASSERT(rs);
@@ -155,6 +214,9 @@ NNS_G3D_INLINE int NNS_G3dRSGetCurrentNodeID (const NNSG3dRS * rs)
     }
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE int NNS_G3dRSGetCurrentNodeDescID (const NNSG3dRS * rs)
 {
     NNS_G3D_NULL_ASSERT(rs);
@@ -165,12 +227,18 @@ NNS_G3D_INLINE int NNS_G3dRSGetCurrentNodeDescID (const NNSG3dRS * rs)
     }
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE fx32 NNS_G3dRSGetPosScale (const NNSG3dRS * rs)
 {
     NNS_G3D_NULL_ASSERT(rs);
     return rs->posScale;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE fx32 NNS_G3dRSGetInvPosScale (const NNSG3dRS * rs)
 {
     NNS_G3D_NULL_ASSERT(rs);

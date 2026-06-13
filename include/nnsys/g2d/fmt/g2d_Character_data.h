@@ -78,12 +78,30 @@ typedef struct NNSG2dPaletteCompressInfo {
     void * pPlttIdxTbl;
 } NNSG2dPaletteCompressInfo;
 
+
+#ifdef SDK_PORT
+typedef struct WIN_NNSG2dPaletteCompressInfo {
+    u16 numPalette;
+    u16 pad16;
+    u32 pPlttIdxTbl;
+} WIN_NNSG2dPaletteCompressInfo;
+#endif
+
 typedef struct NNSG2dPaletteData {
     GXTexFmt fmt;
     BOOL bExtendedPlt;
     u32 szByte;
     void * pRawData;
 } NNSG2dPaletteData;
+
+#ifdef SDK_PORT
+typedef struct WIN_NNSG2dPaletteData {
+    GXTexFmt fmt;
+    BOOL bExtendedPlt;
+    u32 szByte;
+    u32 pRawData;
+} WIN_NNSG2dPaletteData;
+#endif
 
 typedef struct NNSG2dPaletteCompressDataBlock {
     NNSG2dBinaryBlockHeader blockHeader;
@@ -105,6 +123,19 @@ typedef struct NNSG2dCharacterData {
     void * pRawData;
 } NNSG2dCharacterData;
 
+#ifdef SDK_PORT
+typedef struct WIN_NNSG2dCharacterData
+{
+    u16 H;
+    u16 W;
+    GXTexFmt pixelFmt;
+    GXOBJVRamModeChar mappingType;
+    u32 characterFmt;
+    u32 szByte;
+    u32 pRawData;
+} WIN_NNSG2dCharacterData;
+#endif
+
 typedef struct NNSG2dCharacterDataBlock {
     NNSG2dBinaryBlockHeader blockHeader;
     NNSG2dCharacterData characterData;
@@ -122,18 +153,27 @@ typedef struct NNSG2dCharacterPosInfoBlock {
     NNSG2dCharacterPosInfo posInfo;
 } NNSG2dCharacterPosInfoBlock;
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE u32 NNSi_G2dPackCharacterFmtData (NNSG2dCharacterFmt charFmt, BOOL bVramTransferData)
 {
     return (u32)((charFmt << NNS_G2D_CHARACTER_FMT_SHIFT) |
                  (bVramTransferData << NNS_G2D_VRAMTRANSFERDATA_FLAG_SHIFT));
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE NNSG2dCharacterFmt NNSi_G2dGetCharacterFmtType (u32 characterFmt)
 {
     return (NNSG2dCharacterFmt)
            (NNS_G2D_CHARACTER_FMT_MASK & (characterFmt >> NNS_G2D_CHARACTER_FMT_SHIFT));
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE BOOL NNSi_G2dIsCharacterVramTransfered (u32 characterFmt)
 {
     return (BOOL)

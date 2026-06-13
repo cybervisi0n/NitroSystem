@@ -18,6 +18,17 @@ static const char * StrNNSG2dPaletteFmt_ [] = {
 };
 #endif
 
+#ifdef SDK_PORT
+#define NCL_PALETTE_DATA_OUT_MAX 64
+#define NCL_PALETTE_DATA_OUT_MAX_SIZE 1024
+#define NCL_CMP_DATA_OUT_MAX 64
+static u8 paletteDataOut[NCL_PALETTE_DATA_OUT_MAX][NCL_PALETTE_DATA_OUT_MAX_SIZE] = {0};
+static u8 curPaletteDataOut = 0;
+
+static u8 cmpDataOut[NCL_PALETTE_DATA_OUT_MAX][sizeof(NNSG2dPaletteCompressInfo)] = {0};
+static u8 curCmpDataOut = 0;
+#endif
+
 static void DumpPalette_ (const NNSG2dPaletteData * pPlttData)
 {
     NNS_G2D_NULL_ASSERT(pPlttData);
@@ -61,8 +72,25 @@ BOOL NNS_G2dGetUnpackedPaletteData (void * pNclrFile, NNSG2dPaletteData ** ppPlt
                 (NNSG2dPaletteDataBlock *)NNS_G2dFindBinaryBlock(pBinFile,
                                                                  NNS_G2D_BINBLK_SIG_PALETTEDATA);
             if (pBinBlk) {
+                #ifdef SDK_PORT
+                void * rawDataPtr;
+                rawDataPtr = NNS_G2dUnpackNCL((void*)&pBinBlk->paletteData);
+                *ppPltData = &pBinBlk->paletteData;
+                u8 * tempBuf;
+                tempBuf = (u8*)(paletteDataOut[curPaletteDataOut]);
+                curPaletteDataOut++;
+                if( curPaletteDataOut >= NCL_PALETTE_DATA_OUT_MAX )
+                {
+                    curPaletteDataOut = 0;
+                }
+                //tempBuf = malloc( pBinBlk->paletteData.szByte );
+                memcpy( tempBuf, rawDataPtr, pBinBlk->blockHeader.size );
+                pBinBlk->paletteData.pRawData = tempBuf;
+                //PCPORT_TODO: Memory Leaks!
+                #else
                 NNS_G2dUnpackNCL((void *)&pBinBlk->paletteData);
                 *ppPltData = &pBinBlk->paletteData;
+                #endif
                 return TRUE;
             } else {
                 *ppPltData = NULL;
@@ -97,8 +125,12 @@ BOOL NNS_G2dGetUnpackedPaletteCompressInfo (void * pNclrFile, NNSG2dPaletteCompr
                 (NNSG2dPaletteCompressDataBlock *)NNS_G2dFindBinaryBlock(pBinFile,
                                                                          NNS_G2D_BINBLK_SIG_PALETTECOMPINFO);
             if (pBinBlk) {
+                #ifdef SDK_PORT
+                *ppPltCmpInfo = NNSi_G2dUnpackNCLCmpInfo((void*)&pBinBlk->plttCmpInfo);
+                #else
                 NNSi_G2dUnpackNCLCmpInfo((void *)&pBinBlk->plttCmpInfo);
                 *ppPltCmpInfo = &pBinBlk->plttCmpInfo;
+                #endif
                 return TRUE;
             } else {
                 *ppPltCmpInfo = NULL;
@@ -108,18 +140,52 @@ BOOL NNS_G2dGetUnpackedPaletteCompressInfo (void * pNclrFile, NNSG2dPaletteCompr
     }
 }
 
+#ifdef SDK_PORT
+void * NNSi_G2dUnpackNCLCmpInfo(NNSG2dPaletteCompressInfo* pPlttCmpInfo)
+#else
 void NNSi_G2dUnpackNCLCmpInfo (NNSG2dPaletteCompressInfo * pPlttCmpInfo)
+#endif
 {
     NNS_G2D_NULL_ASSERT(pPlttCmpInfo);
+
+#ifdef SDK_PORT
+    void * pPlttCmpInfoTmp = (void*)pPlttCmpInfo;
+    u32 pPlttIdxTblOffset = *(u32*)(pPlttCmpInfoTmp+4);
+    void * pPlttIdxTbl = (void*)((u64)pPlttCmpInfoTmp + (u64)pPlttIdxTblOffset);
+
+    NNSG2dPaletteCompressInfo * pPlttCmpInfoOut = (NNSG2dPaletteCompressInfo*)cmpDataOut[curCmpDataOut];
+    pPlttCmpInfoOut->numPalette = pPlttCmpInfo->numPalette;
+    pPlttCmpInfoOut->pad16 = pPlttCmpInfo->pad16;
+    pPlttCmpInfoOut->pPlttIdxTbl = pPlttIdxTbl;
+    NNSI_G2D_DEBUGMSG0("Unpacking NCLR(Compressed) file is successful.\n" );
+    curCmpDataOut ++;
+    if(curCmpDataOut >= NCL_CMP_DATA_OUT_MAX){
+        curCmpDataOut = 0;
+    }
+    return pPlttCmpInfoOut;
+#else
     pPlttCmpInfo->pPlttIdxTbl = NNS_G2D_UNPACK_OFFSET_PTR(pPlttCmpInfo->pPlttIdxTbl, pPlttCmpInfo);
     NNSI_G2D_DEBUGMSG0("Unpacking NCLR(Compressed) file is successful.\n");
+#endif
 }
 
+#ifdef SDK_PORT
+void * NNS_G2dUnpackNCL(NNSG2dPaletteData* pPlttData)
+#else
 void NNS_G2dUnpackNCL (NNSG2dPaletteData * pPlttData)
+#endif
 {
     NNS_G2D_NULL_ASSERT(pPlttData);
 
+    #ifdef SDK_PORT
+    WIN_NNSG2dPaletteData * pPlttDataWin;
+    pPlttDataWin = (WIN_NNSG2dPaletteData *)pPlttData;
+    u64 rawDataOffset = pPlttDataWin->pRawData;
+    void * rawDataPtr =  (void *)( (u8*)pPlttData + rawDataOffset );
+    return rawDataPtr;
+    #else
     pPlttData->pRawData = NNS_G2D_UNPACK_OFFSET_PTR(pPlttData->pRawData, pPlttData);
+    #endif
 
     NNS_G2D_MINMAX_ASSERT(pPlttData->fmt, GX_TEXFMT_PLTT16, GX_TEXFMT_PLTT256);
     NNSI_G2D_DEBUGMSG0("Unpacking NCLR file is successful.\n");

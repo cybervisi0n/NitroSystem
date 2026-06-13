@@ -22,6 +22,9 @@ void NNSi_G2dSrtcSetInitialValue(NNSG2dSRTControl * pCtrl);
 void NNSi_G2dSrtcBuildMatrixFromSRT_2D(const NNSG2dSRTControl * pCtrl, MtxFx22 * pDst);
 void NNSi_G2dSrtcBuildMatrixFromSRT_3D(const NNSG2dSRTControl * pCtrl, MtxFx22 * pDst);
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNSi_G2dSrtcResetAffineFlag (NNSG2dSRTControl * pSRT)
 {
     NNS_G2D_NULL_ASSERT(pSRT);
@@ -29,6 +32,9 @@ NNS_G2D_INLINE void NNSi_G2dSrtcResetAffineFlag (NNSG2dSRTControl * pSRT)
     pSRT->srtData.SRT_EnableFlag = 0x0000;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNSi_G2dSrtcAffineFlagON (NNSG2dSRTControl * pSRT, u16 newFlag)
 {
     NNS_G2D_NULL_ASSERT(pSRT);
@@ -36,6 +42,9 @@ NNS_G2D_INLINE void NNSi_G2dSrtcAffineFlagON (NNSG2dSRTControl * pSRT, u16 newFl
     pSRT->srtData.SRT_EnableFlag |= (u16)newFlag;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNSi_G2dSrtcAffineFlagOFF (NNSG2dSRTControl * pSRT, u16 newFlag)
 {
     NNS_G2D_NULL_ASSERT(pSRT);
@@ -43,6 +52,9 @@ NNS_G2D_INLINE void NNSi_G2dSrtcAffineFlagOFF (NNSG2dSRTControl * pSRT, u16 newF
     pSRT->srtData.SRT_EnableFlag &= ~(u16)newFlag;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE BOOL NNSi_G2dSrtcIsAffineEnable (const NNSG2dSRTControl * pSRT, NNSG2dAffineEnable flag)
 {
     NNS_G2D_NULL_ASSERT(pSRT);
@@ -50,6 +62,9 @@ NNS_G2D_INLINE BOOL NNSi_G2dSrtcIsAffineEnable (const NNSG2dSRTControl * pSRT, N
     return (pSRT->srtData.SRT_EnableFlag & (u16)flag) ? TRUE : FALSE;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE BOOL NNSi_G2dSrtcIsAffineEnable_SR (const NNSG2dSRTControl * pSRT)
 {
     NNS_G2D_NULL_ASSERT(pSRT);

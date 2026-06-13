@@ -13,12 +13,18 @@ extern "C" {
 
 void NNSi_G2dBGGetCharSize(int * pWidth, int * pHeight, NNSG2dBGSelect n);
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE int GetBGNo (NNSG2dBGSelect n)
 {
     NNS_G2D_BG_ASSERT(n);
     return n & 3;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE REGType16v * GetBGnCNT (NNSG2dBGSelect n)
 {
     extern REGType16v * const NNSiG2dBGCNTTable[];
@@ -27,47 +33,74 @@ NNS_G2D_INLINE REGType16v * GetBGnCNT (NNSG2dBGSelect n)
     return NNSiG2dBGCNTTable[n];
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE BOOL IsBG03D (void)
 {
     return (reg_GX_DISPCNT & REG_GX_DISPCNT_BG02D3D_MASK) != 0;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE BOOL IsMainBG (NNSG2dBGSelect bg)
 {
     NNS_G2D_BG_ASSERT(bg);
     return (bg <= NNS_G2D_BGSELECT_MAIN3);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE GXBGMode GetBGModeMain (void)
 {
     return (GXBGMode)((reg_GX_DISPCNT & REG_GX_DISPCNT_BGMODE_MASK) >> REG_GX_DISPCNT_BGMODE_SHIFT);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE GXBGMode GetBGModeSub (void)
 {
     return (GXBGMode)((reg_GXS_DB_DISPCNT & REG_GXS_DB_DISPCNT_BGMODE_MASK) >> REG_GXS_DB_DISPCNT_BGMODE_SHIFT);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE BOOL IsBGUseExtPlttMain (void)
 {
     return (reg_GX_DISPCNT & REG_GX_DISPCNT_BG_MASK) != 0;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE BOOL IsBGUseExtPlttSub (void)
 {
     return (reg_GXS_DB_DISPCNT & REG_GXS_DB_DISPCNT_BG_MASK) != 0;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE BOOL IsBGUseExtPltt (NNSG2dBGSelect bg)
 {
     return IsMainBG(bg) ? IsBGUseExtPlttMain(): IsBGUseExtPlttSub();
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE BOOL IsSubBGExtPlttAvailable (void)
 {
     return GX_GetBankForSubBGExtPltt() != GX_VRAM_SUB_BGEXTPLTT_NONE;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE BOOL IsMainBGExtPltt01Available (void)
 {
     GXVRamBGExtPltt pltt = GX_GetBankForBGExtPltt();
@@ -86,6 +119,9 @@ static BOOL IsMainBGExtPltt23Available (void)
            || (pltt == GX_VRAM_BGEXTPLTT_0123_FG);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE u16 MakeBGnCNTValText (GXBGScrSizeText screenSize, GXBGColorMode colorMode, GXBGScrBase screenBase, GXBGCharBase charBase, GXBGExtPltt bgExtPltt)
 {
     GX_BG_SCRSIZE_TEXT_ASSERT(screenSize);
@@ -103,6 +139,9 @@ NNS_G2D_INLINE u16 MakeBGnCNTValText (GXBGScrSizeText screenSize, GXBGColorMode 
         );
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE u16 MakeBGnCNTValAffine (GXBGScrSizeAffine screenSize, GXBGAreaOver areaOver, GXBGScrBase screenBase, GXBGCharBase charBase)
 {
     GX_BG_SCRSIZE_AFFINE_ASSERT(screenSize);
@@ -118,6 +157,9 @@ NNS_G2D_INLINE u16 MakeBGnCNTValAffine (GXBGScrSizeAffine screenSize, GXBGAreaOv
         );
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE u16 MakeBGnCNTVal256x16Pltt (GXBGScrSize256x16Pltt screenSize, GXBGAreaOver areaOver, GXBGScrBase screenBase, GXBGCharBase charBase)
 {
     GX_BG_SCRSIZE_256x16PLTT_ASSERT(screenSize);
@@ -134,18 +176,27 @@ NNS_G2D_INLINE u16 MakeBGnCNTVal256x16Pltt (GXBGScrSize256x16Pltt screenSize, GX
         );
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE int GetBGCharOffset (void)
 {
     return (int)(0x10000 * ((reg_GX_DISPCNT & REG_GX_DISPCNT_BGCHAROFFSET_MASK) >>
                             REG_GX_DISPCNT_BGCHAROFFSET_SHIFT));
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE int GetBGScrOffset (void)
 {
     return (int)(0x10000 * ((reg_GX_DISPCNT & REG_GX_DISPCNT_BGSCREENOFFSET_MASK) >>
                             REG_GX_DISPCNT_BGSCREENOFFSET_SHIFT));
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void * GetBGnCharPtr (NNSG2dBGSelect n)
 {
     const int baseBlock = 0x4000 * ((*GetBGnCNT(n) & REG_G2_BG0CNT_CHARBASE_MASK) >>
@@ -154,6 +205,9 @@ NNS_G2D_INLINE void * GetBGnCharPtr (NNSG2dBGSelect n)
     return (void *)((IsMainBG(n) ? (HW_BG_VRAM + GetBGCharOffset()): HW_DB_BG_VRAM) + baseBlock);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void * GetBGnScrPtr (NNSG2dBGSelect n)
 {
     const int baseBlock = 0x800 * ((*GetBGnCNT(n) & REG_G2_BG0CNT_SCREENBASE_MASK) >>
@@ -162,16 +216,27 @@ NNS_G2D_INLINE void * GetBGnScrPtr (NNSG2dBGSelect n)
     return (void *)((IsMainBG(n) ? (HW_BG_VRAM + GetBGScrOffset()): HW_DB_BG_VRAM) + baseBlock);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void LoadBGnChar (NNSG2dBGSelect n, const void * pSrc, u32 offset, u32 szByte)
 {
+    #ifdef SDK_PORT
+    u64 ptr;
+    ptr = (u64)GetBGnCharPtr(n);
+    #else
     u32 ptr;
 
     NNS_G2D_POINTER_ASSERT(pSrc);
     ptr = (u32)GetBGnCharPtr(n);
+    #endif
 
     NNSi_G2dDmaCopy16(GXi_DmaId, pSrc, (void *)(ptr + offset), szByte);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void SetBGnControlText (NNSG2dBGSelect n, GXBGScrSizeText screenSize, GXBGColorMode colorMode, GXBGScrBase screenBase, GXBGCharBase charBase, GXBGExtPltt bgExtPltt)
 {
     *GetBGnCNT(n) = (u16)(
@@ -180,6 +245,9 @@ NNS_G2D_INLINE void SetBGnControlText (NNSG2dBGSelect n, GXBGScrSizeText screenS
         );
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void SetBGnControlAffine (NNSG2dBGSelect n, GXBGScrSizeAffine screenSize, GXBGAreaOver areaOver, GXBGScrBase screenBase, GXBGCharBase charBase)
 {
     *GetBGnCNT(n) = (u16)(
@@ -188,6 +256,9 @@ NNS_G2D_INLINE void SetBGnControlAffine (NNSG2dBGSelect n, GXBGScrSizeAffine scr
         );
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void SetBGnControl256x16Pltt (NNSG2dBGSelect n, GXBGScrSize256x16Pltt screenSize, GXBGAreaOver areaOver, GXBGScrBase screenBase, GXBGCharBase charBase)
 {
     *GetBGnCNT(n) = (u16)(

@@ -9,6 +9,10 @@
 #include <nnsys/snd/resource_mgr.h>
 #include <nnsys/snd/config.h>
 
+#if defined( SDK_PORT )
+#define ATTRIBUTE_ALIGN(x) __attribute__((aligned(x)))
+#endif
+
 static PMSleepCallbackInfo sPreSleepCallback;
 static PMSleepCallbackInfo sPostSleepCallback;
 

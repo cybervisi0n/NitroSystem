@@ -8,8 +8,13 @@
 extern "C" {
 #endif
 
+#ifdef SDK_PORT
+typedef s64 NNSiIntPtr; 
+typedef u64 NNSiUIntPtr;
+#else
 typedef s32 NNSiIntPtr;
 typedef u32 NNSiUIntPtr;
+#endif
 
 #define NNSi_FndRoundUp(value, alignment) \
     (((value) + (alignment-1)) & ~(alignment-1))
@@ -36,36 +41,57 @@ typedef u32 NNSiUIntPtr;
             (data) |= newVal <<(st);                  \
         } while(FALSE);
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_FND_INLINE NNSiUIntPtr NNSiGetUIntPtr(const void* ptr)
 {
     return (NNSiUIntPtr)ptr;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_FND_INLINE u32 GetOffsetFromPtr(const void* start, const void* end)
 {
     return NNSiGetUIntPtr(end) - NNSiGetUIntPtr(start);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_FND_INLINE void* AddU32ToPtr(void* ptr, u32 val)
 {
     return (void*)( NNSiGetUIntPtr(ptr) + val );
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_FND_INLINE const void* AddU32ToCPtr(const void* ptr, u32 val)
 {
     return (const void*)( NNSiGetUIntPtr(ptr) + val );
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_FND_INLINE void* SubU32ToPtr(void* ptr, u32 val)
 {
     return (void*)( NNSiGetUIntPtr(ptr) - val );
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_FND_INLINE const void* SubU32ToCPtr(const void* ptr, u32 val)
 {
     return (const void*)( NNSiGetUIntPtr(ptr) - val );
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_FND_INLINE int ComparePtr(const void* a, const void* b)
 {
     const u8* wa = a;
@@ -74,16 +100,25 @@ NNS_FND_INLINE int ComparePtr(const void* a, const void* b)
     return wa - wb;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_FND_INLINE u16 GetOptForHeap(const NNSiFndHeapHead* pHeapHd)
 {
     return (u16)NNSi_FndGetBitValue(pHeapHd->attribute, 0, 8);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_FND_INLINE void SetOptForHeap(NNSiFndHeapHead * pHeapHd, u16 optFlag)
 {
     NNSi_FndSetBitValue(pHeapHd->attribute, 0, 8, optFlag);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_FND_INLINE void FillAllocMemory(NNSiFndHeapHead * pHeapHd, void * address, u32 size)
 {
     if (GetOptForHeap(pHeapHd) & NNS_FND_HEAP_OPT_0_CLEAR)
@@ -105,6 +140,9 @@ NNS_FND_INLINE void FillAllocMemory(NNSiFndHeapHead * pHeapHd, void * address, u
 #if defined(NNS_FINALROM)
     #define FillFreeMemory(pHeapHd, address, size)  ((void) 0)
 #else
+    #ifdef SDK_PORT
+    static
+    #endif
     NNS_FND_INLINE void FillFreeMemory(NNSiFndHeapHead * pHeapHd, void * address, u32 size)
     {
         if (GetOptForHeap(pHeapHd) & NNS_FND_HEAP_OPT_DEBUG_FILL)
@@ -117,6 +155,9 @@ NNS_FND_INLINE void FillAllocMemory(NNSiFndHeapHead * pHeapHd, void * address, u
 #if defined(NNS_FINALROM)
     #define FillNoUseMemory(pHeapHd, address, size)  ((void) 0)
 #else
+    #ifdef SDK_PORT
+    static
+    #endif
     NNS_FND_INLINE void FillNoUseMemory(NNSiFndHeapHead * pHeapHd, void * address, u32 size)
     {
         if (GetOptForHeap(pHeapHd) & NNS_FND_HEAP_OPT_DEBUG_FILL)

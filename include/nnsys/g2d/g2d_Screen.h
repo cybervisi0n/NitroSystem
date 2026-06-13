@@ -30,6 +30,9 @@ void NNS_G2dBGLoadScreenRect(void * pScreenDst, const NNSG2dScreenData * pScnDat
 
 extern GXBGAreaOver NNSi_G2dBGAreaOver;
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE GXBGColorMode NNSi_G2dBGGetScreenColorMode (const NNSG2dScreenData * pScnData)
 {
     NNS_G2D_POINTER_ASSERT(pScnData);
@@ -37,28 +40,43 @@ NNS_G2D_INLINE GXBGColorMode NNSi_G2dBGGetScreenColorMode (const NNSG2dScreenDat
            GX_BG_COLORMODE_16: GX_BG_COLORMODE_256;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE NNSG2dScreenFormat NNSi_G2dBGGetScreenFormat (const NNSG2dScreenData * pScnData)
 {
     NNS_G2D_POINTER_ASSERT(pScnData);
     return (NNSG2dScreenFormat)pScnData->screenFormat;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dSetBGAreaOver (GXBGAreaOver areaOver)
 {
     SDK_MINMAX_ASSERT(areaOver, GX_BG_AREAOVER_XLU, GX_BG_AREAOVER_REPEAT);
     NNSi_G2dBGAreaOver = areaOver;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE GXBGAreaOver NNS_G2dGetBGAreaOver (void)
 {
     return NNSi_G2dBGAreaOver;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dBGSetup (NNSG2dBGSelect bg, const NNSG2dScreenData * pScnData, const NNSG2dCharacterData * pChrData, const NNSG2dPaletteData * pPltData, GXBGScrBase scnBase, GXBGCharBase chrBase)
 {
     NNS_G2dBGSetupEx(bg, pScnData, pChrData, pPltData, NULL, NULL, scnBase, chrBase);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dBGLoadElements (NNSG2dBGSelect bg, const NNSG2dScreenData * pScnData, const NNSG2dCharacterData * pChrData, const NNSG2dPaletteData * pPltData)
 {
     NNS_G2dBGLoadElementsEx(bg, pScnData, pChrData, pPltData, NULL, NULL);

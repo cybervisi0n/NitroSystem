@@ -13,8 +13,17 @@ extern "C" {
 BOOL NNS_G2dGetUnpackedAnimBank(void * pNanrFile, NNSG2dAnimBankData ** ppAnimBank);
 BOOL NNS_G2dGetUnpackedMCAnimBank(void * pNanrFile, NNSG2dAnimBankData ** ppAnimBank);
 
-void NNS_G2dUnpackNAN(NNSG2dAnimBankData * pData);
+#ifdef SDK_PORT
+void WIN_CheckAndFreeAnimBank(void * start, void * end);
 
+NNSG2dAnimBankData* NNS_G2dUnpackNAN(NNSG2dAnimBankData* pData);
+#else
+void NNS_G2dUnpackNAN(NNSG2dAnimBankData * pData);
+#endif
+
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE u16 NNS_G2dGetNumAnimSequence (const NNSG2dAnimBankData * pAnimBank)
 {
     NNS_G2D_NULL_ASSERT(pAnimBank);

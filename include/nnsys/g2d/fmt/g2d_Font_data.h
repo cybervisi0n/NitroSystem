@@ -92,8 +92,23 @@ typedef struct NNSG2dFontWidth {
     u16 indexBegin;
     u16 indexEnd;
     struct NNSG2dFontWidth * pNext;
+    #ifdef SDK_BUILD_ARM
     NNSG2dCharWidths widthTable[];
+    #else
+    NNSG2dCharWidths * widthTable;
+    #endif
 } NNSG2dFontWidth;
+
+#ifndef SDK_BUILD_ARM
+typedef struct WIN_NNSG2dFontWidth
+{
+    u16 indexBegin;
+    u16 indexEnd;
+    u32 pNext;
+    NNSG2dCharWidths widthTable[];
+}
+WIN_NNSG2dFontWidth;
+#endif
 
 typedef struct NNSG2dFontCodeMap {
     u16 ccodeBegin;
@@ -101,8 +116,25 @@ typedef struct NNSG2dFontCodeMap {
     u16 mappingMethod;
     u16 reserved;
     struct NNSG2dFontCodeMap * pNext;
+    #ifdef SDK_BUILD_ARM
     u16 mapInfo[];
+    #else
+    u16 * mapInfo;
+    #endif
 } NNSG2dFontCodeMap;
+
+#ifndef SDK_BUILD_ARM
+typedef struct WIN_NNSG2dFontCodeMap
+{
+    u16 ccodeBegin;
+    u16 ccodeEnd;
+    u16 mappingMethod;
+    u16 reserved;
+    u32 pNext;
+    u16 mapInfo[];
+}
+WIN_NNSG2dFontCodeMap;
+#endif
 
 typedef struct NNSG2dFontInformation {
     u8 fontType;
@@ -114,6 +146,21 @@ typedef struct NNSG2dFontInformation {
     NNSG2dFontWidth * pWidth;
     NNSG2dFontCodeMap * pMap;
 } NNSG2dFontInformation;
+
+#ifndef SDK_BUILD_ARM
+typedef struct WIN_NNSG2dFontInformation
+{
+    u8 fontType;
+    s8 linefeed;
+    u16 alterCharIndex;
+    NNSG2dCharWidths defaultWidth;
+    u8 encoding;
+    u32 pGlyph;
+    u32 pWidth;
+    u32 pMap;
+}
+WIN_NNSG2dFontInformation;
+#endif
 
 typedef struct NNSG2dFontInformationBlock {
     NNSG2dBinaryBlockHeader blockHeader;

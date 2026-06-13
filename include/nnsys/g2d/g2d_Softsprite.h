@@ -67,6 +67,9 @@ void NNS_G2dDrawSpriteBasicFast(const NNSG2dBasicSprite * pB);
 void NNS_G2dDrawSpriteExtendedFast(const NNSG2dExtendedSprite * pE);
 void NNS_G2dDrawSpriteFast(s16 px, s16 py, int pz, int sx, int sy, int U0, int V0, int U1, int V1);
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dDrawSpriteSimple (const NNSG2dSimpleSprite * pS)
 {
     G3_PushMtx();
@@ -74,6 +77,9 @@ NNS_G2D_INLINE void NNS_G2dDrawSpriteSimple (const NNSG2dSimpleSprite * pS)
     G3_PopMtx(1);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dDrawSpriteBasic (const NNSG2dBasicSprite * pB)
 {
     G3_PushMtx();
@@ -81,6 +87,9 @@ NNS_G2D_INLINE void NNS_G2dDrawSpriteBasic (const NNSG2dBasicSprite * pB)
     G3_PopMtx(1);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dDrawSpriteExtended (const NNSG2dExtendedSprite * pE)
 {
     G3_PushMtx();
@@ -88,6 +97,9 @@ NNS_G2D_INLINE void NNS_G2dDrawSpriteExtended (const NNSG2dExtendedSprite * pE)
     G3_PopMtx(1);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dDrawSprite (s16 px, s16 py, int pz, int sx, int sy, int U0, int V0, int U1, int V1)
 {
     G3_PushMtx();

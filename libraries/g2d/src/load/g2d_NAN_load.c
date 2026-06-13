@@ -30,10 +30,96 @@ static const char * s_playModeStrTbl[] = {
 };
 #endif
 
+#ifdef SDK_PORT
+#define NAN_DATA_OUT_MAX 64
+#define NAN_SEQUENCE_OUT_MAX 400
+#define NAN_MAX_FRAMES_OUT 1000
+#define NAN_UAAT_DATA_OUT_MAX 200
+#define NAN_USER_EX_ANIM_SEQ_ATTR_MAX 400
+static u32 curDataOutNum = 0;
+static u32 curSequenceOutNum = 0;
+static NNSG2dAnimBankData dataOuts[NAN_DATA_OUT_MAX] = {0};
+static NNSG2dAnimSequenceData sequenceOuts[NAN_DATA_OUT_MAX][NAN_SEQUENCE_OUT_MAX] = {0};
+static u8 frameArrOut[NAN_DATA_OUT_MAX][sizeof(NNSG2dAnimFrameData) * NAN_MAX_FRAMES_OUT];
+static u32 curUaatDataOutNum = 0;
+static WIN_UAATData uaatDataOuts[NAN_UAAT_DATA_OUT_MAX];
+static u8 userExAnimSeqAttrOuts[NAN_UAAT_DATA_OUT_MAX][sizeof(NNSG2dUserExAnimSequenceAttr)*NAN_USER_EX_ANIM_SEQ_ATTR_MAX];
+
+#define NAN_ALLOCATED_ANIM_BANKS_MAX 2048
+typedef struct {
+    void * origAddr;
+    void * mallocAddr;
+} WIN_NAN_malloc_t;
+static WIN_NAN_malloc_t s_allocatedAnimBanksTbl[NAN_ALLOCATED_ANIM_BANKS_MAX] = {0};
+
+static void WIN_FreeAnimBank(NNSG2dAnimBankData * pAnimBank);
+static void WIN_RegisterAnimBank(NNSG2dAnimBankData ** ppAnimBank );
+
+static void WIN_FreeAnimBank(NNSG2dAnimBankData * pAnimBank)
+{
+    free(pAnimBank->pSequenceArrayHead);
+    free(pAnimBank->pFrameArrayHead);
+    free(pAnimBank);
+    return;
+}
+
+static void WIN_RegisterAnimBank(NNSG2dAnimBankData ** ppAnimBank )
+{
+    for(int i=0; i < NAN_ALLOCATED_ANIM_BANKS_MAX; i++)
+    {
+        if(s_allocatedAnimBanksTbl[i].origAddr == NULL)
+        {
+            s_allocatedAnimBanksTbl[i].origAddr = ppAnimBank;
+            s_allocatedAnimBanksTbl[i].mallocAddr = *ppAnimBank;
+            break;
+        }
+    }
+}
+
+void WIN_CheckAndFreeAnimBank(void * start, void * end)
+{
+    u64 start64 = (u64)start;
+    u64 end64 = (u64)end;
+    for(int i=0; i < NAN_ALLOCATED_ANIM_BANKS_MAX; i++)
+    {
+        if((u64)s_allocatedAnimBanksTbl[i].origAddr > start64 && (u64)s_allocatedAnimBanksTbl[i].origAddr < end64)
+        {
+            NNSG2dAnimBankData * bank = s_allocatedAnimBanksTbl[i].mallocAddr;
+            WIN_FreeAnimBank(bank);
+            s_allocatedAnimBanksTbl[i].origAddr = NULL;
+            s_allocatedAnimBanksTbl[i].mallocAddr = NULL;
+            break;
+        }
+    }
+}
+#endif
+
 static BOOL GetUnpackedAnimBankImpl_ (void * pNanrFile, NNSG2dAnimBankData ** ppAnimBank)
 {
     NNS_G2D_NULL_ASSERT(pNanrFile);
     NNS_G2D_NULL_ASSERT(ppAnimBank);
+    #ifdef SDK_PORT
+    {
+        NNSG2dBinaryFileHeader*     pBinFile    = (NNSG2dBinaryFileHeader*)pNanrFile;
+        {
+            NNSG2dAnimBankDataBlock* pAnimBankBlk   =
+                (NNSG2dAnimBankDataBlock*)NNS_G2dFindBinaryBlock( pBinFile, 
+                                                                  NNS_G2D_BLKSIG_ANIMBANK );
+            if( pAnimBankBlk )
+            {
+                *ppAnimBank = NNS_G2dUnpackNAN( (void*)&pAnimBankBlk->animBankData );
+
+                WIN_RegisterAnimBank(ppAnimBank);
+                   
+                //
+                // OK 
+                //
+                //*ppAnimBank = &pAnimBankBlk->animBankData;
+                return TRUE;   
+            }
+        }                
+    }
+    #else
     {
         NNSG2dBinaryFileHeader * pBinFile = (NNSG2dBinaryFileHeader *)pNanrFile;
         {
@@ -47,6 +133,7 @@ static BOOL GetUnpackedAnimBankImpl_ (void * pNanrFile, NNSG2dAnimBankData ** pp
             }
         }
     }
+    #endif
 
     *ppAnimBank = NULL;
     return FALSE;
@@ -98,12 +185,113 @@ BOOL NNS_G2dGetUnpackedMCAnimBank (void * pNanrFile, NNSG2dAnimBankData ** ppAni
     return GetUnpackedAnimBankImpl_(pNanrFile, ppAnimBank);
 }
 
+#ifdef SDK_PORT
+NNSG2dAnimBankData* NNS_G2dUnpackNAN(NNSG2dAnimBankData* pData)
+#else
 void NNS_G2dUnpackNAN (NNSG2dAnimBankData * pData)
+#endif
 {
     u16 i, j;
 
     NNS_G2D_NULL_ASSERT(pData);
+    #ifdef SDK_PORT
+    WIN_NNSG2dAnimBankData * pDataWin = (WIN_NNSG2dAnimBankData *)pData;
+    NNSG2dAnimBankData * pDataOut = (NNSG2dAnimBankData *)malloc( sizeof(NNSG2dAnimBankData) );
 
+    pDataOut->pAnimContents      = (void *)((u64)pDataWin->pAnimContents + (u64)pDataWin);
+
+    pDataOut->numSequences = pDataWin->numSequences;
+    pDataOut->numTotalFrames =  pDataWin->numTotalFrames;
+
+    pDataOut->pSequenceArrayHead = malloc(sizeof( NNSG2dAnimSequenceData ) * pDataOut->numSequences);
+    curSequenceOutNum++;
+    if( curSequenceOutNum >= NAN_DATA_OUT_MAX )
+    {
+        curSequenceOutNum = 0;
+    }
+    pDataOut->pFrameArrayHead = malloc( sizeof( NNSG2dAnimFrameData ) * pDataOut->numTotalFrames );
+
+    NNSG2dAnimSequenceData*   pSeq            = pDataOut->pSequenceArrayHead;
+    WIN_NNSG2dAnimSequenceData * pSeqWin        = (void *)((u64)pDataWin + (u64)pDataWin->pSequenceArrayHead );
+    NNSG2dAnimFrameData*      pFrameBase      = pDataOut->pFrameArrayHead;
+
+    WIN_NNSG2dAnimFrameData * pFrameDataWin;
+
+    u32 curFrames = 0;
+
+    for( i = 0; i < pDataOut->numSequences; i++ )
+    {
+        pSeq[i].numFrames = pSeqWin[i].numFrames;
+        pSeq[i].loopStartFrameIdx = pSeqWin[i].loopStartFrameIdx;
+        pSeq[i].animType = pSeqWin[i].animType;
+        pSeq[i].playMode = pSeqWin[i].playMode;
+        pSeq[i].pAnmFrameArray = (NNSG2dAnimFrameData*)((void*)pDataOut->pFrameArrayHead + curFrames * sizeof( NNSG2dAnimFrameData ));
+        curFrames += pSeq[i].numFrames;
+
+        pFrameDataWin = (void *)((u64)pDataWin + (u64)pDataWin->pFrameArrayHead + (u64)pSeqWin[i].pAnmFrameArray);
+
+        for( j = 0; j < pSeq[i].numFrames; j++ )
+        {
+            pSeq[i].pAnmFrameArray[j].pContent = (void *)((u64)pDataWin + (u64)pDataWin->pAnimContents + (u64)pFrameDataWin[j].pContent);
+            pSeq[i].pAnmFrameArray[j].frames = pFrameDataWin[j].frames;
+            pSeq[i].pAnmFrameArray[j].pad16 = pFrameDataWin[j].pad16;
+        }
+    }
+
+    if( pDataWin->pExtendedData != 0 )
+    {
+        WIN_UAATData * uaatOut = &uaatDataOuts[curUaatDataOutNum];
+
+
+        pDataOut->pExtendedData = (void*)(uaatOut);
+
+        NNSG2dUserExDataBlock* pExBlk 
+                = (NNSG2dUserExDataBlock*)pDataOut->pExtendedData;
+        NNSG2dUserExDataBlock* pExBlkWin
+                = (NNSG2dUserExDataBlock*)((u64)pDataWin + (u64)pDataWin->pExtendedData);
+        pExBlk->blkTypeID = pExBlkWin->blkTypeID;
+        pExBlk->blkSize = pExBlkWin->blkSize;
+        WIN_NNSG2dUserExAnimAttrBank* pAnmExAttrBankWin 
+                = (WIN_NNSG2dUserExAnimAttrBank*)(pExBlkWin + 1);
+        NNSG2dUserExAnimAttrBank * pAnmExAttrBank = &uaatOut->exAttrBank;
+        pAnmExAttrBank->numSequences = pAnmExAttrBankWin->numSequences;
+        pAnmExAttrBank->numAttribute = pAnmExAttrBankWin->numAttribute;
+
+        WIN_NNSG2dUserExAnimSequenceAttr * pAnmSeqAttrArrayWin;
+        NNSG2dUserExAnimSequenceAttr * pAnmSeqAtttrArray;
+        pAnmSeqAttrArrayWin = (WIN_NNSG2dUserExAnimSequenceAttr*)((u64)pAnmExAttrBankWin + (u64)pAnmExAttrBankWin->pAnmSeqAttrArray);
+        pAnmExAttrBank->pAnmSeqAttrArray = (NNSG2dUserExAnimSequenceAttr *)userExAnimSeqAttrOuts[curUaatDataOutNum];
+
+        for( i=0; i < pAnmExAttrBank->numSequences; i++ ) {
+            NNSG2dUserExAnimSequenceAttr* pSeqAttr =  &pAnmExAttrBank->pAnmSeqAttrArray[i];
+            WIN_NNSG2dUserExAnimSequenceAttr* pSeqAttrWin = &pAnmSeqAttrArrayWin[i];
+            pSeqAttr->numFrames = pSeqAttrWin->numFrames;
+            pSeqAttr->pad16 = pSeqAttrWin->pad16;
+            pSeqAttr->pAttr = (u32*)((u64)pAnmExAttrBankWin + (u64)pSeqAttrWin->pAttr);
+            pSeqAttr->pAnmFrmAttrArray = malloc( sizeof(NNSG2dUserExAnimFrameAttr) * pSeqAttr->numFrames);
+            for( j = 0; j < pSeqAttr->numFrames; j++ ) {
+                NNSG2dUserExAnimFrameAttr * pFrm = &pSeqAttr->pAnmFrmAttrArray[j];
+                WIN_NNSG2dUserExAnimFrameAttr * pFrmArrWin = (void*)((u64)pAnmExAttrBankWin + (u64)pSeqAttrWin->pAnmFrmAttrArray);
+                WIN_NNSG2dUserExAnimFrameAttr * pFrmWin = &pFrmArrWin[j];
+                pFrm->pAttr = (void*)((u64)pAnmExAttrBankWin + (u64)pFrmWin->pAttr);
+            }
+        }
+       
+
+        curUaatDataOutNum++;
+        if( curUaatDataOutNum >= NAN_UAAT_DATA_OUT_MAX )
+        {
+            curUaatDataOutNum = 0;
+        }
+    }
+
+    curDataOutNum++;
+    if( curDataOutNum >= NAN_DATA_OUT_MAX )
+    {
+        curDataOutNum = 0;
+    }
+    return pDataOut;
+    #else
     pData->pSequenceArrayHead = NNS_G2D_UNPACK_OFFSET_PTR(pData->pSequenceArrayHead, pData);
     pData->pFrameArrayHead = NNS_G2D_UNPACK_OFFSET_PTR(pData->pFrameArrayHead, pData);
     pData->pAnimContents = NNS_G2D_UNPACK_OFFSET_PTR(pData->pAnimContents, pData);
@@ -147,6 +335,7 @@ void NNS_G2dUnpackNAN (NNSG2dAnimBankData * pData)
             }
         }
     }
+    #endif
 
     NNSI_G2D_DEBUGMSG0("Unpacking NANR file is successful.\n");
 }

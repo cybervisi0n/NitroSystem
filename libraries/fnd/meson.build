@@ -6,7 +6,8 @@ libnnsfnd = library('nnsfnd',
     dependencies: nitrosdk_dep,
     include_directories: [nitrosystem_includes, libnnsfnd_includes],
     pic: false,
-    sources: libnnsfnd_srcs
+    sources: libnnsfnd_srcs,
+    native: build_target != 'arm'
 )
 
 nitrosystem_libs += libnnsfnd

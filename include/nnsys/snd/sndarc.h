@@ -121,12 +121,30 @@ typedef struct NNSSndArcFileInfo {
     void * mem;
     u32 reserved;
 } NNSSndArcFileInfo;
+#ifdef SDK_PORT
+typedef struct WIN_NNSSndArcFileInfo
+{
+    u32 offset;
+    u32 size;
+    u32 mem;
+    u32 reserved;
+} WIN_NNSSndArcFileInfo;
+#endif
 
 typedef struct NNSSndArcFat {
     struct SNDBinaryBlockHeader blockHeader;
     u32 count;
     NNSSndArcFileInfo files[0];
 } NNSSndArcFat;
+#ifdef SDK_PORT
+typedef struct WIN_NNSSndArcFat
+{
+    struct SNDBinaryBlockHeader blockHeader;
+    
+    u32 count;
+    WIN_NNSSndArcFileInfo files[0];
+} WIN_NNSSndArcFat;
+#endif
 
 typedef struct NNSSndArcInfo {
     struct SNDBinaryBlockHeader blockHeader;

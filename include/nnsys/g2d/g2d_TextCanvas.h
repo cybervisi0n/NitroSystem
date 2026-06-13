@@ -101,6 +101,9 @@ void NNSi_G2dTextCanvasDrawTaggedText(const NNSG2dTextCanvas * pTxn, int x, int 
 #endif
                                       );
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dTextCanvasInit (NNSG2dTextCanvas * pTxn, const NNSG2dCharCanvas * pCC, const NNSG2dFont * pFont, int hSpace, int vSpace)
 {
     NNS_G2D_POINTER_ASSERT(pTxn);
@@ -118,30 +121,45 @@ NNS_G2D_INLINE void NNS_G2dTextCanvasInit (NNSG2dTextCanvas * pTxn, const NNSG2d
 #define NNS_G2dTextCanvasInitUTF16      NNS_G2dTextCanvasInit
 #define NNS_G2dTextCanvasInitShiftJIS   NNS_G2dTextCanvasInit
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE const NNSG2dCharCanvas * NNS_G2dTextCanvasGetCharCanvas (const NNSG2dTextCanvas * pTxn)
 {
     NNS_G2D_TEXTCANVAS_ASSERT(pTxn);
     return pTxn->pCanvas;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE const NNSG2dFont * NNS_G2dTextCanvasGetFont (const NNSG2dTextCanvas * pTxn)
 {
     NNS_G2D_TEXTCANVAS_ASSERT(pTxn);
     return pTxn->pFont;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE int NNS_G2dTextCanvasGetHSpace (const NNSG2dTextCanvas * pTxn)
 {
     NNS_G2D_TEXTCANVAS_ASSERT(pTxn);
     return pTxn->hSpace;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE int NNS_G2dTextCanvasGetVSpace (const NNSG2dTextCanvas * pTxn)
 {
     NNS_G2D_TEXTCANVAS_ASSERT(pTxn);
     return pTxn->vSpace;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dTextCanvasSetCharCanvas (NNSG2dTextCanvas * pTxn, const NNSG2dCharCanvas * pCC)
 {
     NNS_G2D_TEXTCANVAS_ASSERT(pTxn);
@@ -149,6 +167,9 @@ NNS_G2D_INLINE void NNS_G2dTextCanvasSetCharCanvas (NNSG2dTextCanvas * pTxn, con
     pTxn->pCanvas = pCC;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dTextCanvasSetFont (NNSG2dTextCanvas * pTxn, const NNSG2dFont * pFont)
 {
     NNS_G2D_TEXTCANVAS_ASSERT(pTxn);
@@ -156,18 +177,27 @@ NNS_G2D_INLINE void NNS_G2dTextCanvasSetFont (NNSG2dTextCanvas * pTxn, const NNS
     pTxn->pFont = pFont;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dTextCanvasSetHSpace (NNSG2dTextCanvas * pTxn, int hSpace)
 {
     NNS_G2D_TEXTCANVAS_ASSERT(pTxn);
     pTxn->hSpace = hSpace;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dTextCanvasSetVSpace (NNSG2dTextCanvas * pTxn, int vSpace)
 {
     NNS_G2D_TEXTCANVAS_ASSERT(pTxn);
     pTxn->vSpace = vSpace;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE int NNS_G2dTextCanvasGetStringWidth (const NNSG2dTextCanvas * pTxn, const NNSG2dChar * str, const NNSG2dChar ** pPos)
 {
     return NNS_G2dFontGetStringWidth(
@@ -177,6 +207,9 @@ NNS_G2D_INLINE int NNS_G2dTextCanvasGetStringWidth (const NNSG2dTextCanvas * pTx
         pPos);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE int NNS_G2dTextCanvasGetTextHeight (const NNSG2dTextCanvas * pTxn, const NNSG2dChar * txt)
 {
     return NNS_G2dFontGetTextHeight(
@@ -185,6 +218,9 @@ NNS_G2D_INLINE int NNS_G2dTextCanvasGetTextHeight (const NNSG2dTextCanvas * pTxn
         txt);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE int NNS_G2dTextCanvasGetTextWidth (const NNSG2dTextCanvas * pTxn, const NNSG2dChar * txt)
 {
     return NNS_G2dFontGetTextWidth(
@@ -193,6 +229,9 @@ NNS_G2D_INLINE int NNS_G2dTextCanvasGetTextWidth (const NNSG2dTextCanvas * pTxn,
         txt);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE NNSG2dTextRect NNS_G2dTextCanvasGetTextRect (const NNSG2dTextCanvas * pTxn, const NNSG2dChar * txt)
 {
     return NNS_G2dFontGetTextRect(
@@ -202,6 +241,9 @@ NNS_G2D_INLINE NNSG2dTextRect NNS_G2dTextCanvasGetTextRect (const NNSG2dTextCanv
         txt);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE NNSiG2dTextDirection NNSi_G2dGetTextDirection (const NNSG2dFont * pFont)
 {
     NNSiG2dTextDirection d = { 0, 0 };
@@ -227,45 +269,69 @@ NNS_G2D_INLINE NNSiG2dTextDirection NNSi_G2dGetTextDirection (const NNSG2dFont *
 }
 
 #ifdef NNS_G2D_FONT_ENABLE_DIRECTION_SUPPORT
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dTextCanvasDrawString (const NNSG2dTextCanvas * pTxn, int x, int y, int cl, const NNSG2dChar * str, const NNSG2dChar ** pPos)
 {
     NNSi_G2dTextCanvasDrawString(pTxn, x, y, cl, str, (const void **)pPos,
                                  NNSi_G2dGetTextDirection(NNS_G2dTextCanvasGetFont(pTxn)));
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dTextCanvasDrawText (const NNSG2dTextCanvas * pTxn, int x, int y, int cl, u32 flags, const NNSG2dChar * txt)
 {
     NNSi_G2dTextCanvasDrawText(pTxn, x, y, cl, flags, txt,
                                NNSi_G2dGetTextDirection(NNS_G2dTextCanvasGetFont(pTxn)));
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dTextCanvasDrawTextRect (const NNSG2dTextCanvas * pTxn, int x, int y, int w, int h, int cl, u32 flags, const NNSG2dChar * txt)
 {
     NNSi_G2dTextCanvasDrawTextRect(pTxn, x, y, w, h, cl, flags, txt,
                                    NNSi_G2dGetTextDirection(NNS_G2dTextCanvasGetFont(pTxn)));
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dTextCanvasDrawTaggedText (const NNSG2dTextCanvas * pTxn, int x, int y, int cl, const NNSG2dChar * txt, NNSG2dTagCallback cbFunc, void * cbParam)
 {
     NNSi_G2dTextCanvasDrawTaggedText(pTxn, x, y, cl, txt, cbFunc, cbParam,
                                      NNSi_G2dGetTextDirection(NNS_G2dTextCanvasGetFont(pTxn)));
 }
 #else
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dTextCanvasDrawString (const NNSG2dTextCanvas * pTxn, int x, int y, int cl, const NNSG2dChar * str, const NNSG2dChar ** pPos)
 {
     NNSi_G2dTextCanvasDrawString(pTxn, x, y, cl, str, (const void **)pPos);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dTextCanvasDrawText (const NNSG2dTextCanvas * pTxn, int x, int y, int cl, u32 flags, const NNSG2dChar * txt)
 {
     NNSi_G2dTextCanvasDrawText(pTxn, x, y, cl, flags, txt);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dTextCanvasDrawTextRect (const NNSG2dTextCanvas * pTxn, int x, int y, int w, int h, int cl, u32 flags, const NNSG2dChar * txt)
 {
     NNSi_G2dTextCanvasDrawTextRect(pTxn, x, y, w, h, cl, flags, txt);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dTextCanvasDrawTaggedText (const NNSG2dTextCanvas * pTxn, int x, int y, int cl, const NNSG2dChar * txt, NNSG2dTagCallback cbFunc, void * cbParam)
 {
     NNSi_G2dTextCanvasDrawTaggedText(pTxn, x, y, cl, txt, cbFunc, cbParam);

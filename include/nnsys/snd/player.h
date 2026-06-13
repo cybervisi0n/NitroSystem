@@ -97,6 +97,9 @@ typedef struct NNSSndPlayer {
     u16 pad2_;
 } NNSSndPlayer;
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_SND_INLINE BOOL NNS_SndHandleIsValid (const struct NNSSndHandle * handle)
 {
     NNS_NULL_ASSERT(handle);

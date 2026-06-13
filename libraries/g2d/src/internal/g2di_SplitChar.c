@@ -1,4 +1,6 @@
+#ifndef SDK_PORT
 #include <wchar_t.h>
+#endif
 
 #include <nnsys/g2d/g2di_SplitChar.h>
 #include <nnsys/g2d/g2d_config.h>
@@ -35,7 +37,11 @@ u16 NNSi_G2dSplitCharUTF16 (const void ** ppChar)
     NNS_G2D_ALIGN_ASSERT(*ppChar, 2);
 
     c = *(const wchar_t *)*ppChar;
+    #ifdef SDK_PORT
+    *ppChar = ((u16*)*ppChar) + 1;
+    #else
     ((const wchar_t *)*ppChar)++;
+    #endif
 
     return c;
 }

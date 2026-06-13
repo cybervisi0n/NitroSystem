@@ -5,6 +5,18 @@
 #include <nnsys/g2d/load/g2d_NFT_load.h>
 #include <nnsys/g2d/g2d_config.h>
 
+#ifdef SDK_PORT
+#define NNS_FONT_INFO_OUT_MAX 100
+#define NNS_FONT_WIDTH_OUT_MAX 1000
+#define NNS_FONT_MAP_OUT_MAX 1000
+static u32 curFontInfoOut = 0;
+static u32 curFontWidthOut = 0;
+static u32 curFontMapOut = 0;
+static NNSG2dFontInformation fontInfoOut[NNS_FONT_INFO_OUT_MAX];
+static NNSG2dFontWidth fontWidthOut[NNS_FONT_INFO_OUT_MAX];
+static NNSG2dFontCodeMap fontMapOut[NNS_FONT_MAP_OUT_MAX];
+#endif
+
 BOOL NNSi_G2dGetUnpackedFont (void * pNftrFile, NNSG2dFontInformation ** ppRes)
 {
 #ifdef NNS_G2D_FONT_USE_OLD_RESOURCE
@@ -30,6 +42,9 @@ BOOL NNSi_G2dGetUnpackedFont (void * pNftrFile, NNSG2dFontInformation ** ppRes)
         NNSG2dBinaryFileHeader * pBinFile = (NNSG2dBinaryFileHeader *)pNftrFile;
         NNSG2dBinaryBlockHeader * pBinBlock;
 
+        #ifdef SDK_PORT
+        *ppRes = NNSi_G2dUnpackNFT( pBinFile );
+        #else
         NNSi_G2dUnpackNFT(pBinFile);
 
         pBinBlock = NNS_G2dFindBinaryBlock(pBinFile, NNS_G2D_BINBLK_SIG_FINFDATA);
@@ -40,6 +55,7 @@ BOOL NNSi_G2dGetUnpackedFont (void * pNftrFile, NNSG2dFontInformation ** ppRes)
         }
 
         *ppRes = (NNSG2dFontInformation *)((u8 *)pBinBlock + sizeof(*pBinBlock));
+        #endif
 #ifdef NNS_G2D_FONT_USE_OLD_RESOURCE
         if (isOldVer) {
             (*ppRes)->pGlyph->flags = 0;
@@ -55,13 +71,29 @@ BOOL NNSi_G2dGetUnpackedFont (void * pNftrFile, NNSG2dFontInformation ** ppRes)
 
 static void NNS_G2D_INLINE ResolveOffset (void ** ppOffset, void * pBase)
 {
+    #ifdef SDK_PORT
+    *ppOffset = (void *)(*(u64 *)ppOffset + (u64)pBase);
+    #else
     *ppOffset = (void *)(*(u32 *)ppOffset + (u32)pBase);
+    #endif
 }
 
+#ifdef SDK_PORT
+void * NNSi_G2dUnpackNFT (NNSG2dBinaryFileHeader* pHeader)
+#else
 void NNSi_G2dUnpackNFT (NNSG2dBinaryFileHeader * pHeader)
+#endif
 {
     NNSG2dBinaryBlockHeader * pBlock;
+    #ifdef SDK_PORT
+    NNSG2dFontInformation* pInfo = &fontInfoOut[curFontInfoOut];
+    curFontInfoOut++;
+    if(curFontInfoOut > NNS_FONT_INFO_OUT_MAX) {
+        curFontInfoOut = 0;
+    }
+    #else
     NNSG2dFontInformation * pInfo = NULL;
+    #endif
 
     NNS_G2D_POINTER_ASSERT(pHeader);
 
@@ -74,7 +106,19 @@ void NNSi_G2dUnpackNFT (NNSG2dBinaryFileHeader * pHeader)
             case NNS_G2D_BINBLK_SIG_FINFDATA:
                 NNS_G2D_ASSERT(pInfo == NULL);
                 {
+                    #ifdef SDK_PORT
+                    WIN_NNSG2dFontInformation * pInfoWin = (WIN_NNSG2dFontInformation*)((u8*)pBlock + sizeof(*pBlock));
+                    pInfo->fontType = pInfoWin->fontType;
+                    pInfo->alterCharIndex = pInfoWin->alterCharIndex;
+                    memcpy(&pInfo->defaultWidth, &pInfoWin->defaultWidth, sizeof(NNSG2dCharWidths));
+                    pInfo->pWidth = (void*)pInfoWin->pWidth;
+                    pInfo->encoding = pInfoWin->encoding;
+                    pInfo->linefeed = pInfoWin->linefeed;
+                    pInfo->pGlyph = (void*)pInfoWin->pGlyph;
+                    pInfo->pMap = (void*)pInfoWin->pMap;
+                    #else
                     pInfo = (NNSG2dFontInformation *)((u8 *)pBlock + sizeof(*pBlock));
+                    #endif
 
                     NNS_G2D_ASSERT(pInfo->fontType == NNS_G2D_FONTTYPE_GLYPH);
 
@@ -84,10 +128,69 @@ void NNSi_G2dUnpackNFT (NNSG2dBinaryFileHeader * pHeader)
 
                     if (pInfo->pWidth != NULL) {
                         ResolveOffset((void **)&(pInfo->pWidth), pHeader);
+                        #ifdef SDK_PORT
+                        NNSG2dFontWidth * baseWidth = pInfo->pWidth;
+                        NNSG2dFontWidth * curWidth = baseWidth;
+                        NNSG2dFontWidth * widthOut = &fontWidthOut[curFontWidthOut];
+                        pInfo->pWidth = widthOut;
+                        curFontWidthOut++;
+                        if(curFontWidthOut > NNS_FONT_WIDTH_OUT_MAX) {
+                            curFontWidthOut = 0;
+                        }
+                        while(curWidth != NULL) {
+                            WIN_NNSG2dFontWidth * winWidth = (WIN_NNSG2dFontWidth*)curWidth;
+                            widthOut->indexBegin = winWidth->indexBegin;
+                            widthOut->indexEnd = winWidth->indexEnd;
+                            widthOut->widthTable = winWidth->widthTable;
+
+                            if(winWidth->pNext != 0) {
+                                widthOut->pNext = &fontWidthOut[curFontWidthOut];
+                                widthOut = &fontWidthOut[curFontWidthOut];
+                                curFontWidthOut++;
+                                if(curFontWidthOut > NNS_FONT_WIDTH_OUT_MAX) {
+                                    curFontWidthOut = 0;
+                                }
+                                curWidth = (void*)((u64)pHeader + (u64)winWidth->pNext);
+                            } else {
+                                curWidth = NULL;
+                                widthOut->pNext = NULL;
+                            }
+                        }
+                        #endif
                         NNS_G2D_POINTER_ASSERT(pInfo->pWidth)
                     }
                     if (pInfo->pMap != NULL) {
                         ResolveOffset((void **)&(pInfo->pMap), pHeader);
+                        #ifdef SDK_PORT
+                        NNSG2dFontCodeMap * baseMap = pInfo->pMap;
+                        NNSG2dFontCodeMap * curMap = baseMap;
+                        NNSG2dFontCodeMap * mapOut = &fontMapOut[curFontMapOut];
+                        pInfo->pMap = mapOut;
+                        curFontMapOut++;
+                        if(curFontMapOut > NNS_FONT_MAP_OUT_MAX) {
+                            curFontMapOut = 0;
+                        }
+                        while(curMap != NULL) {
+                            WIN_NNSG2dFontCodeMap * winMap = (WIN_NNSG2dFontCodeMap*)curMap;
+                            mapOut->ccodeBegin = winMap->ccodeBegin;
+                            mapOut->ccodeEnd = winMap->ccodeEnd;
+                            mapOut->mappingMethod = winMap->mappingMethod;
+                            mapOut->reserved = winMap->reserved;
+                            mapOut->mapInfo = winMap->mapInfo;
+                            if(winMap->pNext != 0) {
+                                mapOut->pNext = &fontMapOut[curFontMapOut];
+                                mapOut = &fontMapOut[curFontMapOut];
+                                curFontMapOut++;
+                                if(curFontMapOut > NNS_FONT_MAP_OUT_MAX) {
+                                    curFontMapOut = 0;
+                                }
+                                curMap = (void*)((u64)pHeader + (u64)winMap->pNext);
+                            } else {
+                                curMap = NULL;
+                                mapOut->pNext = NULL;
+                            }
+                        }
+                        #endif
                         NNS_G2D_POINTER_ASSERT(pInfo->pMap)
                     }
                 }
@@ -103,6 +206,7 @@ void NNSi_G2dUnpackNFT (NNSG2dBinaryFileHeader * pHeader)
             break;
             case NNS_G2D_BINBLK_SIG_CWDHDATA:
             {
+                #ifndef SDK_PORT
                 NNSG2dFontWidth * pWidth = (NNSG2dFontWidth *)((u8 *)pBlock + sizeof(*pBlock));
 
                 NNS_G2D_ASSERT(pWidth->indexBegin <= pWidth->indexEnd);
@@ -111,10 +215,12 @@ void NNSi_G2dUnpackNFT (NNSG2dBinaryFileHeader * pHeader)
                     ResolveOffset((void **)&(pWidth->pNext), pHeader);
                     NNS_G2D_POINTER_ASSERT(pWidth->pNext)
                 }
+                #endif
             }
             break;
             case NNS_G2D_BINBLK_SIG_CMAPDATA:
             {
+                #ifndef SDK_PORT
                 NNSG2dFontCodeMap * pMap = (NNSG2dFontCodeMap *)((u8 *)pBlock + sizeof(*pBlock));
 
                 NNS_G2D_ASSERT(pMap->ccodeBegin <= pMap->ccodeEnd);
@@ -126,6 +232,7 @@ void NNSi_G2dUnpackNFT (NNSG2dBinaryFileHeader * pHeader)
                     ResolveOffset((void **)&(pMap->pNext), pHeader);
                     NNS_G2D_POINTER_ASSERT(pMap->pNext)
                 }
+                #endif
             }
             break;
             default:
@@ -142,6 +249,10 @@ void NNSi_G2dUnpackNFT (NNSG2dBinaryFileHeader * pHeader)
     NNS_G2D_ASSERTMSG(pInfo->pGlyph != NULL, "The font has no Glyph Block.");
 
     NNS_G2D_ASSERT(pInfo->alterCharIndex < NNS_G2D_FONT_MAX_GLYPH_INDEX((NNSG2dFont *)&pInfo));
+
+    #ifdef SDK_PORT
+    return pInfo;
+    #endif
 }
 
 #ifndef SDK_FINALROM

@@ -7,7 +7,11 @@ NNSG2dBinaryBlockHeader * NNS_G2dFindBinaryBlock (NNSG2dBinaryFileHeader * pBinF
     NNS_G2D_NULL_ASSERT(pBinFileHeader);
 
     {
+        #ifdef SDK_PORT
+        NNSG2dBinaryBlockHeader * pCursor = (NNSG2dBinaryBlockHeader *)((u64)pBinFileHeader + (u32)pBinFileHeader->headerSize);
+        #else
         NNSG2dBinaryBlockHeader * pCursor = (NNSG2dBinaryBlockHeader *)((u32)pBinFileHeader + (u32)pBinFileHeader->headerSize);
+        #endif
 
         u16 count = 0;
         while (count < pBinFileHeader->dataBlocks) {
@@ -19,7 +23,11 @@ NNSG2dBinaryBlockHeader * NNS_G2dFindBinaryBlock (NNSG2dBinaryFileHeader * pBinF
             if (pCursor->kind == signature) {
                 return pCursor;
             }
+            #ifdef SDK_PORT
+            pCursor = (NNSG2dBinaryBlockHeader *)((u64)pCursor + pCursor->size);
+            #else
             pCursor = (NNSG2dBinaryBlockHeader *)((u32)pCursor + pCursor->size);
+            #endif
             count++;
         }
     }

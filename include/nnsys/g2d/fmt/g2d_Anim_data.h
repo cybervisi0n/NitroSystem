@@ -74,6 +74,15 @@ typedef struct NNSG2dAnimFrameData {
     u16 pad16;
 } NNSG2dAnimFrameData;
 
+#ifdef SDK_PORT
+typedef struct WIN_NNSG2dAnimFrameData
+{
+    u32             pContent;
+    u16             frames;
+    u16             pad16;
+}WIN_NNSG2dAnimFrameData;
+#endif
+
 typedef struct NNSG2dAnimSequenceData {
     u16 numFrames;
     u16 loopStartFrameIdx;
@@ -81,6 +90,16 @@ typedef struct NNSG2dAnimSequenceData {
     NNSG2dAnimationPlayMode playMode;
     NNSG2dAnimFrameData * pAnmFrameArray;
 } NNSG2dAnimSequenceData;
+
+#ifdef SDK_PORT
+typedef struct WIN_NNSG2dAnimSequenceData {
+    u16                     numFrames;
+    u16                     loopStartFrameIdx;
+    u32                     animType;                                      
+    NNSG2dAnimationPlayMode playMode;
+    u32                     pAnmFrameArray;
+} WIN_NNSG2dAnimSequenceData;
+#endif
 
 typedef struct NNSG2dAnimBankData {
     u16 numSequences;
@@ -92,6 +111,18 @@ typedef struct NNSG2dAnimBankData {
     void * pExtendedData;
 } NNSG2dAnimBankData;
 
+#ifdef SDK_PORT
+typedef struct WIN_NNSG2dAnimBankData {
+    u16                       numSequences;
+    u16                       numTotalFrames;
+    u32                       pSequenceArrayHead;
+    u32                       pFrameArrayHead;
+    u32                       pAnimContents;
+    u32                       pStringBank;
+    u32                       pExtendedData;
+} WIN_NNSG2dAnimBankData;
+#endif
+
 typedef struct NNSG2dAnimBankDataBlock {
     NNSG2dBinaryBlockHeader blockHeader;
     NNSG2dAnimBankData animBankData;
@@ -100,6 +131,20 @@ typedef struct NNSG2dAnimBankDataBlock {
 typedef struct NNSG2dUserExAnimFrameAttr {
     u32 * pAttr;
 } NNSG2dUserExAnimFrameAttr;
+
+#ifdef SDK_PORT
+typedef struct WIN_NNSG2dAnimBankDataBlock
+{
+    NNSG2dBinaryBlockHeader     blockHeader;
+    NNSG2dAnimBankData          animBankData;
+    
+}WIN_NNSG2dAnimBankDataBlock;
+
+typedef struct WIN_NNSG2dUserExAnimFrameAttr
+{
+    u32            pAttr;
+}WIN_NNSG2dUserExAnimFrameAttr;
+#endif
 
 typedef struct NNSG2dUserExAnimSequenceAttr {
     u16 numFrames;
@@ -114,31 +159,74 @@ typedef struct NNSG2dUserExAnimAttrBank {
     NNSG2dUserExAnimSequenceAttr * pAnmSeqAttrArray;
 } NNSG2dUserExAnimAttrBank;
 
+#ifdef SDK_PORT
+typedef struct WIN_NNSG2dUserExAnimSequenceAttr
+{
+    u16                          numFrames;
+    u16                          pad16;
+    u32                          pAttr;    
+    u32                          pAnmFrmAttrArray;
+        
+}WIN_NNSG2dUserExAnimSequenceAttr;
+
+typedef struct WIN_NNSG2dUserExAnimAttrBank
+{
+    u16                           numSequences;
+    u16                           numAttribute;
+    u32                           pAnmSeqAttrArray;   
+    
+}WIN_NNSG2dUserExAnimAttrBank;
+
+typedef struct WIN_UAATData
+{
+    NNSG2dUserExDataBlock       exDataBlk;
+    NNSG2dUserExAnimAttrBank    exAttrBank;
+}WIN_UAATData;
+#endif
+
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE u32 NNSi_G2dMakeAnimType (NNSG2dAnimationType animType, NNSG2dAnimationElement elmType)
 {
     return (u32)animType << NNS_G2D_ANIMTYPE_SHIFT | ((u32)elmType & NNS_G2D_ANIMELEM_MASK);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE NNSG2dAnimationType NNSi_G2dGetAnimSequenceAnimType (u32 animType)
 {
     return (NNSG2dAnimationType)(animType >> NNS_G2D_ANIMTYPE_SHIFT);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE NNSG2dAnimationElement NNSi_G2dGetAnimSequenceElementType (u32 animType)
 {
     return (NNSG2dAnimationElement)(animType & NNS_G2D_ANIMELEM_MASK);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE NNSG2dAnimationType NNS_G2dGetAnimSequenceAnimType (const NNSG2dAnimSequenceData * pAnimSeq)
 {
     return NNSi_G2dGetAnimSequenceAnimType(pAnimSeq->animType);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE NNSG2dAnimationElement NNS_G2dGetAnimSequenceElementType (const NNSG2dAnimSequenceData * pAnimSeq)
 {
     return NNSi_G2dGetAnimSequenceElementType(pAnimSeq->animType);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE u32 NNS_G2dCalcAnimSequenceTotalVideoFrames (const NNSG2dAnimSequenceData * pAnimSeq)
 {
     u32 i;
@@ -151,6 +239,9 @@ NNS_G2D_INLINE u32 NNS_G2dCalcAnimSequenceTotalVideoFrames (const NNSG2dAnimSequ
 }
 
 #ifndef NNS_FROM_TOOL
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE u16 NNS_G2dGetAnimSequenceIndex (const NNSG2dAnimBankData * pAnimBank, const NNSG2dAnimSequenceData * pAnimSeq)
 {
     return (u16)(
@@ -161,6 +252,9 @@ NNS_G2D_INLINE u16 NNS_G2dGetAnimSequenceIndex (const NNSG2dAnimBankData * pAnim
 
 #endif
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE const NNSG2dUserExAnimAttrBank * NNS_G2dGetUserExAnimAttrBank (const NNSG2dAnimBankData * pAnimBank)
 {
     const NNSG2dUserExDataBlock * pBlk = NNSi_G2dGetUserExDataBlkByID(pAnimBank->pExtendedData, NNS_G2D_USEREXBLK_ANMATTR);
@@ -172,6 +266,9 @@ NNS_G2D_INLINE const NNSG2dUserExAnimAttrBank * NNS_G2dGetUserExAnimAttrBank (co
     }
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE const NNSG2dUserExAnimSequenceAttr * NNS_G2dGetUserExAnimSequenceAttr (const NNSG2dUserExAnimAttrBank * pAnimAttrBank, u16 idx)
 {
     NNS_G2D_NULL_ASSERT(pAnimAttrBank);
@@ -183,6 +280,9 @@ NNS_G2D_INLINE const NNSG2dUserExAnimSequenceAttr * NNS_G2dGetUserExAnimSequence
     }
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE const NNSG2dUserExAnimFrameAttr * NNS_G2dGetUserExAnimFrameAttr (const NNSG2dUserExAnimSequenceAttr * pAnimSeqAttr, u16 idx)
 {
     NNS_G2D_NULL_ASSERT(pAnimSeqAttr);
@@ -194,12 +294,18 @@ NNS_G2D_INLINE const NNSG2dUserExAnimFrameAttr * NNS_G2dGetUserExAnimFrameAttr (
     }
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE u32 NNS_G2dGetUserExAnimSeqAttrValue (const NNSG2dUserExAnimSequenceAttr * pAnimSeqAttr)
 {
     NNS_G2D_NULL_ASSERT(pAnimSeqAttr);
     return pAnimSeqAttr->pAttr[0];
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE u32 NNS_G2dGetUserExAnimFrmAttrValue (const NNSG2dUserExAnimFrameAttr * pFrmAttr)
 {
     NNS_G2D_NULL_ASSERT(pFrmAttr);

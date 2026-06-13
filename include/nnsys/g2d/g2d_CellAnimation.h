@@ -40,28 +40,43 @@ void NNS_G2dRestartCellAnimation(NNSG2dCellAnimation * pCellAnim);
 void NNS_G2dSetCellAnimationSpeed(NNSG2dCellAnimation * pCellAnim, fx32 speed);
 u16 NNS_G2dMakeCellToOams(GXOamAttr * pDstOams, u16 numDstOam, const NNSG2dCellData * pCell, const MtxFx22 * pMtxSR, const NNSG2dFVec2 * pBaseTrans, u16 affineIndex, BOOL bDoubleAffine);
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE NNSG2dAnimController * NNS_G2dGetCellAnimationAnimCtrl (NNSG2dCellAnimation * pCellAnim)
 {
     NNS_G2D_NULL_ASSERT(pCellAnim);
     return &pCellAnim->animCtrl;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE const NNSG2dCellData * NNS_G2dGetCellAnimationCurrentCell (const NNSG2dCellAnimation * pCellAnim)
 {
     NNS_G2D_NULL_ASSERT(pCellAnim);
     return pCellAnim->pCurrentCell;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE BOOL NNSi_G2dIsCellAnimVramTransferHandleValid (const NNSG2dCellAnimation * pCellAnim)
 {
     return (BOOL)(pCellAnim->cellTransferStateHandle != NNS_G2D_INVALID_CELL_TRANSFER_STATE_HANDLE);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE BOOL NNSi_G2dIsVramTransferCellAnim (const NNSG2dCellAnimation * pCellAnim)
 {
     return NNSi_G2dIsCellAnimVramTransferHandleValid(pCellAnim);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNSi_G2dSetCellAnimVramTransferHandle (NNSG2dCellAnimation * pCellAnim, u32 handle)
 {
     NNS_G2D_NULL_ASSERT(pCellAnim);
@@ -70,6 +85,9 @@ NNS_G2D_INLINE void NNSi_G2dSetCellAnimVramTransferHandle (NNSG2dCellAnimation *
     pCellAnim->cellTransferStateHandle = handle;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE u32 NNSi_G2dGetCellAnimVramTransferHandle (const NNSG2dCellAnimation * pCellAnim)
 {
     NNS_G2D_NULL_ASSERT(pCellAnim);

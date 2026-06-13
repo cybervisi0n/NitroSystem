@@ -79,12 +79,18 @@ void NNS_G2dInitMCAnimation(NNSG2dMultiCellAnimation * pMultiCellAnim, NNSG2dNod
 void NNS_G2dInitMCInstance(NNSG2dMultiCellInstance * pMultiCell, NNSG2dNode * pNodeArray, NNSG2dCellAnimation * pCellAnim, u16 numNode, const NNSG2dCellAnimBankData * pAnimBank, const NNSG2dCellDataBank * pCellDataBank);
 BOOL NNS_G2dSetMCDataToMCInstance(NNSG2dMultiCellInstance * pMCInst, const NNSG2dMultiCellData * pMcData);
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE NNSG2dAnimController * NNS_G2dGetMCAnimAnimCtrl (NNSG2dMultiCellAnimation * pMultiCellAnim)
 {
     NNS_G2D_NULL_ASSERT(pMultiCellAnim);
     return &pMultiCellAnim->animCtrl;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void * NNSi_G2dGetMCInstanceWorkMemory (NNSG2dMultiCellInstance * pMultiCell)
 {
     return pMultiCell->pCellAnimInstasnces;

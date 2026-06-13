@@ -27,7 +27,11 @@ static NNSSndSeqPlayer * AllocSeqPlayer(int prio);
 static void InsertPlayerList(NNSSndPlayer * player, NNSSndSeqPlayer * seqPlayer);
 static void InsertPrioList(NNSSndSeqPlayer * seqPlayer);
 static void SetPlayerPriority(NNSSndSeqPlayer * seqPlayer, int priority);
+#ifdef SDK_PORT
+static void PlayerHeapDisposeCallback(void * mem, u32 size, u64 data1, u32 data2);
+#else
 static void PlayerHeapDisposeCallback(void * mem, u32 size, u32 data1, u32 data2);
+#endif
 
 void NNS_SndPlayerSetPlayerVolume (int playerNo, int volume)
 {
@@ -354,6 +358,7 @@ void NNS_SndPlayerSetTrackMuteEx (NNSSndHandle * handle, u16 trackBitMask, NNSSn
         (SNDSeqMute)mute
         );
 }
+#ifndef SDK_PORT
 void SND_SetTrackMuteEx(int playerNo, u32 trackBitMask, SNDSeqMute mute);
 SDK_WEAK_SYMBOL void SND_SetTrackMuteEx (int playerNo, u32 trackBitMask, SNDSeqMute mute)
 {
@@ -363,6 +368,7 @@ SDK_WEAK_SYMBOL void SND_SetTrackMuteEx (int playerNo, u32 trackBitMask, SNDSeqM
 
     NNS_WARNING(FALSE, "SND_SetTrackMuteEx is not supported.");
 }
+#endif
 #endif
 
 void NNS_SndPlayerSetTrackVolume (NNSSndHandle * handle, u16 trackBitMask, int volume)
@@ -914,7 +920,11 @@ static void ShutdownPlayer (NNSSndSeqPlayer * seqPlayer)
     seqPlayer->status = NNS_SND_SEQ_PLAYER_STATUS_STOP;
 }
 
+#ifdef SDK_PORT
+static void PlayerHeapDisposeCallback (void * mem, u32, u64, u32)
+#else
 static void PlayerHeapDisposeCallback (void * mem, u32, u32, u32)
+#endif
 {
     NNSSndPlayerHeap * heap = (NNSSndPlayerHeap *)mem;
     NNSSndSeqPlayer * seqPlayer;

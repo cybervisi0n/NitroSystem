@@ -81,6 +81,9 @@ u16 NNS_G2dGetOamManagerAffineCapacity(NNSG2dOamManagerInstance * pMan);
 
 GXOamAttr * NNS_G2dGetOamBuffer(NNSG2dOamType type);
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dSetOamManagerSpriteZoffsetStep (NNSG2dOamManagerInstance * pMan, fx32 zStep)
 {
     NNS_G2D_NULL_ASSERT(pMan);

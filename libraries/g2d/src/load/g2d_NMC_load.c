@@ -99,7 +99,11 @@ const NNSG2dMultiCellData * NNS_G2dGetMultiCellDataByIdx (const NNSG2dMultiCellD
 
 #ifndef SDK_FINALROM
 
+#ifdef SDK_PORT
+static const char* GetPlayModeStr_(int playType)
+#else
 static const char * GetPlayModeStr_ (playType)
+#endif
 {
     if ((NNS_G2D_MCANIM_PLAYMODE_RESET <= playType) &&
         (NNS_G2D_MCANIM_PLAYMODE_MAX >= playType)) {

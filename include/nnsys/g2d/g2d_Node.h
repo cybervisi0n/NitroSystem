@@ -31,12 +31,18 @@ typedef struct NNSG2dNode {
 
 void NNSi_G2dInitializeNode(NNSG2dNode * pNode, NNSG2dNodeType type);
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNSi_G2dSetNodeVisibleFlag (NNSG2dNode * pNode, BOOL bVisible)
 {
     NNS_G2D_NULL_ASSERT(pNode);
     pNode->bVisible = bVisible;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE BOOL NNSi_G2dGetNodeVisibleFlag (NNSG2dNode * pNode)
 {
     NNS_G2D_NULL_ASSERT(pNode);

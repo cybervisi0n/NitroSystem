@@ -25,6 +25,9 @@ void NNSi_G2dResetOamSoftEmuAutoZOffset(void);
 void NNSi_G2dSetOamSoftEmuAutoZOffsetStep(fx32 step);
 fx32 NNSi_G2dGetOamSoftEmuAutoZOffsetStep(void);
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dDrawOneOam3DDirect (const GXOamAttr * pOam, const NNSG2dImageAttr * pTexImageAttr, u32 texBaseAddr, u32 pltBaseAddr)
 {
     G3_PushMtx();
@@ -36,6 +39,9 @@ NNS_G2D_INLINE void NNS_G2dDrawOneOam3DDirect (const GXOamAttr * pOam, const NNS
     G3_PopMtx(1);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dDrawOneOam3DDirectWithPos (s16 posX, s16 posY, s16 posZ, const GXOamAttr * pOam, const NNSG2dImageAttr * pTexImageAttr, u32 texBaseAddr, u32 pltBaseAddr)
 {
     G3_PushMtx();
@@ -48,6 +54,9 @@ NNS_G2D_INLINE void NNS_G2dDrawOneOam3DDirectWithPos (s16 posX, s16 posY, s16 po
     G3_PopMtx(1);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dDrawOneOam3DDirectWithPosAffine (s16 posX, s16 posY, s16 posZ, const GXOamAttr * pOam, const NNSG2dImageAttr * pTexImageAttr, u32 texBaseAddr, u32 pltBaseAddr, const MtxFx22 * pMtx)
 {
     G3_PushMtx();

@@ -58,6 +58,9 @@ typedef struct NNSSndStrmThread {
     NNSFndList commandList;
 } NNSSndStrmThread;
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_SND_INLINE BOOL NNS_SndStrmHandleIsValid (const NNSSndStrmHandle * handle)
 {
     NNS_NULL_ASSERT(handle);

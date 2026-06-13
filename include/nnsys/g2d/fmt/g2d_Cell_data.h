@@ -51,6 +51,13 @@ typedef struct NNSG2dVramTransferData {
     NNSG2dCellVramTransferData * pCellTransferDataArray;
 } NNSG2dVramTransferData;
 
+#ifdef SDK_PORT
+typedef struct WIN_NNSG2dVramTransferData {
+    u32 szByteMax;
+    u32 pCellTransferDataArray;
+} WIN_NNSG2dVramTransferData;
+#endif
+
 typedef struct NNSG2dCellOAMAttrData {
     u16 attr0;
     u16 attr1;
@@ -70,10 +77,25 @@ typedef struct NNSG2dCellData {
     NNSG2dCellOAMAttrData * pOamAttrArray;
 } NNSG2dCellData;
 
+#ifdef SDK_PORT
+typedef struct WIN_NNSG2dCellData {
+    u16 numOAMAttrs;
+    u16 cellAttr;
+    u32 pOamAttrArray;
+} WIN_NNSG2dCellData;
+#endif
+
 typedef struct NNSG2dCellDataWithBR {
     NNSG2dCellData cellData;
     NNSG2dCellBoundingRectS16 boundingRect;
 } NNSG2dCellDataWithBR;
+
+#ifdef SDK_PORT
+typedef struct WIN_NNSG2dCellDataWithBR {
+    WIN_NNSG2dCellData cellData;
+    NNSG2dCellBoundingRectS16 boundingRect; 
+} WIN_NNSG2dCellDataWithBR;
+#endif
 
 typedef struct NNSG2dCellDataBank {
     u16 numCells;
@@ -85,6 +107,18 @@ typedef struct NNSG2dCellDataBank {
     void * pExtendedData;
 } NNSG2dCellDataBank;
 
+#ifdef SDK_PORT
+typedef struct WIN_NNSG2dCellDataBank {
+    u16 numCells;
+    u16 cellBankAttr;
+    u32 pCellDataArrayHead;
+    NNSG2dCharacterDataMappingType mappingMode;
+    u32 pVramTransferData;
+    u32 pStringBank;
+    u32 pExtendedData;
+} WIN_NNSG2dCellDataBank;
+#endif
+
 typedef struct NNSG2dCellDataBankBlock {
     NNSG2dBinaryBlockHeader blockHeader;
     NNSG2dCellDataBank cellDataBank;
@@ -94,23 +128,46 @@ typedef struct NNSG2dUserExCellAttr {
     u32 * pAttr;
 } NNSG2dUserExCellAttr;
 
+#ifdef SDK_PORT
+typedef struct WIN_NNSG2dUserExCellAttr {
+    u32 pAttr;
+} WIN_NNSG2dUserExCellAttr;
+#endif
+
 typedef struct NNSG2dUserExCellAttrBank {
     u16 numCells;
     u16 numAttribute;
     NNSG2dUserExCellAttr * pCellAttrArray;
 } NNSG2dUserExCellAttrBank;
 
+#ifdef SDK_PORT
+typedef struct WIN_NNSG2dUserExCellAttrBank {
+    u16 numCells;
+    u16 numAttribute;
+    u32 pCellAttrArray;
+}WIN_NNSG2dUserExCellAttrBank;
+#endif
+
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNSi_G2dSetCellBankHasBR (NNSG2dCellDataBank * pCellBank)
 {
     NNS_G2D_NULL_ASSERT(pCellBank);
     pCellBank->cellBankAttr |= NNS_G2D_CELLBK_ATTR_CELLWITHBR;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE BOOL NNSi_G2dCellBankHasBR (const NNSG2dCellDataBank * pCellBank)
 {
     return (BOOL)(pCellBank->cellBankAttr & NNS_G2D_CELLBK_ATTR_CELLWITHBR);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE u16 NNSi_G2dSetCellAttrFlipFlag (BOOL bH, BOOL bV, BOOL bHV)
 {
     return (u16)((bH << NNS_G2D_CELL_FLIP_H_SHIFT) |
@@ -118,42 +175,66 @@ NNS_G2D_INLINE u16 NNSi_G2dSetCellAttrFlipFlag (BOOL bH, BOOL bV, BOOL bHV)
                  (bHV << NNS_G2D_CELL_FLIP_HV_SHIFT));
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE u16 NNSi_G2dSetCellAttrHasBR (BOOL bHasBR)
 {
     return (u16)(bHasBR << NNS_G2D_CELL_HAS_BR_SHIFT);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE BOOL NNSi_G2dIsCellFlipH (const NNSG2dCellData * pCell)
 {
     return (BOOL)((pCell->cellAttr >> NNS_G2D_CELL_FLIP_H_SHIFT) & 0x1);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE BOOL NNSi_G2dIsCellFlipV (const NNSG2dCellData * pCell)
 {
     return (BOOL)((pCell->cellAttr >> NNS_G2D_CELL_FLIP_V_SHIFT) & 0x1);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE BOOL NNSi_G2dIsCellFlipHV (const NNSG2dCellData * pCell)
 {
     return (BOOL)((pCell->cellAttr >> NNS_G2D_CELL_FLIP_HV_SHIFT) & 0x1);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE BOOL NNS_G2dCellHasBR (const NNSG2dCellData * pCell)
 {
     return (BOOL)((pCell->cellAttr >> NNS_G2D_CELL_HAS_BR_SHIFT) & 0x1);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE BOOL NNSi_G2dCellHasBR (const NNSG2dCellData * pCell)
 {
     return NNS_G2dCellHasBR(pCell);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE const NNSG2dCellBoundingRectS16 * NNS_G2dGetCellBoundingRect (const NNSG2dCellData * pCell)
 {
     const NNSG2dCellDataWithBR * pBR = (const NNSG2dCellDataWithBR *)pCell;
     return &pBR->boundingRect;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNSi_G2dSetCellBoundingSphereR (NNSG2dCellData * pCell, u8 R)
 {
     if ((R & 0x3) != 0) {
@@ -165,22 +246,34 @@ NNS_G2D_INLINE void NNSi_G2dSetCellBoundingSphereR (NNSG2dCellData * pCell, u8 R
     pCell->cellAttr |= ((R & NNS_G2D_CELL_BS_R_MASK) << NNS_G2D_CELL_BS_R_SHIFT);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE u8 NNS_G2dGetCellBoundingSphereR (const NNSG2dCellData * pCell)
 {
     u8 R = (u8)((pCell->cellAttr >> NNS_G2D_CELL_BS_R_SHIFT) & NNS_G2D_CELL_BS_R_MASK);
     return (u8)(R << NNS_G2D_CELL_BS_R_OFFSET);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE u8 NNSi_G2dGetCellBoundingSphereR (const NNSG2dCellData * pCell)
 {
     return NNS_G2dGetCellBoundingSphereR(pCell);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE BOOL NNS_G2dCellDataBankHasVramTransferData (const NNSG2dCellDataBank * pCellBank)
 {
     return (BOOL)(pCellBank->pVramTransferData != NULL);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE u32 NNS_G2dGetSizeRequiredVramTransferCellDataBank (const NNSG2dCellDataBank * pCellBank)
 {
     if (NNS_G2dCellDataBankHasVramTransferData(pCellBank)) {
@@ -191,12 +284,18 @@ NNS_G2D_INLINE u32 NNS_G2dGetSizeRequiredVramTransferCellDataBank (const NNSG2dC
     return 0;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE const NNSG2dCellVramTransferData * NNSi_G2dGetCellVramTransferData (const NNSG2dCellDataBank * pCellBank, u16 cellIdx)
 {
     const NNSG2dVramTransferData * pTransferData = pCellBank->pVramTransferData;
     return &pTransferData->pCellTransferDataArray[cellIdx];
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE const NNSG2dUserExCellAttrBank * NNS_G2dGetUserExCellAttrBankFromCellBank (const NNSG2dCellDataBank * pCellBank)
 {
     const NNSG2dUserExDataBlock * pBlk = NNSi_G2dGetUserExDataBlkByID(pCellBank->pExtendedData, NNS_G2D_USEREXBLK_CELLATTR);
@@ -208,6 +307,9 @@ NNS_G2D_INLINE const NNSG2dUserExCellAttrBank * NNS_G2dGetUserExCellAttrBankFrom
     }
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE const NNSG2dUserExCellAttr * NNS_G2dGetUserExCellAttr (const NNSG2dUserExCellAttrBank * pCellAttrBank, u16 idx)
 {
     if (idx < pCellAttrBank->numCells) {
@@ -217,11 +319,17 @@ NNS_G2D_INLINE const NNSG2dUserExCellAttr * NNS_G2dGetUserExCellAttr (const NNSG
     }
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE const u32 NNS_G2dGetUserExCellAttrValue (const NNSG2dUserExCellAttr * pCellAttr)
 {
     return pCellAttr->pAttr[0];
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dCopyCellAsOamAttr (const NNSG2dCellData * pCell, u16 idx, GXOamAttr * pDst)
 {
     {
@@ -233,6 +341,9 @@ NNS_G2D_INLINE void NNS_G2dCopyCellAsOamAttr (const NNSG2dCellData * pCell, u16 
     }
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE s16 NNS_G2dRepeatXinCellSpace (s16 srcX)
 {
     if (srcX > NNS_G2D_CELL_MAX_X) {
@@ -241,6 +352,9 @@ NNS_G2D_INLINE s16 NNS_G2dRepeatXinCellSpace (s16 srcX)
     return srcX;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE s16 NNS_G2dRepeatYinCellSpace (s16 srcY)
 {
     if (srcY > NNS_G2D_CELL_MAX_Y) {

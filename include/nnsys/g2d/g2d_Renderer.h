@@ -105,100 +105,157 @@ const NNSG2dPaletteSwapTable * NNS_G2dGetRendererPaletteTbl(NNSG2dRendererInstan
 void NNS_G2dResetRendererPaletteTbl(NNSG2dRendererInstance * pRend);
 void NNS_G2dSetRendererImageProxy(NNSG2dRendererInstance * pRend, const NNSG2dImageProxy * pImgProxy, const NNSG2dImagePaletteProxy * pPltProxy);
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dSetRendererSpriteZoffset (NNSG2dRendererInstance * pRend, fx32 spriteZoffset)
 {
     pRend->spriteZoffsetStep = spriteZoffset;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dSetRendererAffineOverwriteMode (NNSG2dRendererInstance * pRend, NNSG2dRendererAffineTypeOverwiteMode affineMode)
 {
     NNS_G2D_NULL_ASSERT(pRend);
     pRend->rendererCore.affineOverwriteMode = affineMode;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE NNSG2dRendererAffineTypeOverwiteMode NNS_G2dGetRendererAffineOverwriteMode (const NNSG2dRendererInstance * pRend)
 {
     NNS_G2D_NULL_ASSERT(pRend);
     return pRend->rendererCore.affineOverwriteMode;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dSetRendererSurfaceActiveFlag (NNSG2dRenderSurface * pSurface, BOOL bActive)
 {
     NNS_G2D_NULL_ASSERT(pSurface);
     pSurface->coreSurface.bActive = bActive;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE BOOL NNS_G2dGetRendererSurfaceActiveFlag (const NNSG2dRenderSurface * pSurface)
 {
     NNS_G2D_NULL_ASSERT(pSurface);
     return pSurface->coreSurface.bActive;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dSetRendererOverwritePriority (NNSG2dRendererInstance * pRend, u16 Priority)
 {
     pRend->overwritePriority = Priority;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE u16 NNS_G2dGetRendererOverwritePriority (const NNSG2dRendererInstance * pRend)
 {
     return pRend->overwritePriority;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dSetRendererOverwritePlttNo (NNSG2dRendererInstance * pRend, u16 plttNo)
 {
     pRend->overwritePlttNo = plttNo;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE u16 NNS_G2dGetRendererOverwritePlttNo (const NNSG2dRendererInstance * pRend)
 {
     return pRend->overwritePlttNo;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dSetRendererOverwritePlttNoOffset (NNSG2dRendererInstance * pRend, u16 plttNoOffset)
 {
     pRend->overwritePlttNoOffset = plttNoOffset;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE u16 NNS_G2dGetRendererOverwritePlttNoOffset (const NNSG2dRendererInstance * pRend)
 {
     return pRend->overwritePlttNoOffset;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dSetRendererOverwriteMosaicFlag (NNSG2dRendererInstance * pRend, BOOL overwriteMosaicFlag)
 {
     pRend->overwriteMosaicFlag = overwriteMosaicFlag;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE BOOL NNS_G2dGetRendererOverwriteMosaicFlag (const NNSG2dRendererInstance * pRend)
 {
     return pRend->overwriteMosaicFlag;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dSetRendererOverwriteOBJMode (NNSG2dRendererInstance * pRend, GXOamMode overwriteObjMode)
 {
     pRend->overwriteObjMode = overwriteObjMode;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE GXOamMode NNS_G2dGetRendererOverwriteOBJMode (const NNSG2dRendererInstance * pRend)
 {
     return pRend->overwriteObjMode;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dSetRendererOverwriteEnable (NNSG2dRendererInstance * pRnd, NNSG2dRendererOverwriteParam flag)
 {
     pRnd->overwriteEnableFlag |= flag;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dSetRendererOverwriteDisable (NNSG2dRendererInstance * pRnd, NNSG2dRendererOverwriteParam flag)
 {
     pRnd->overwriteEnableFlag &= ~flag;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE BOOL NNS_G2dIsRendererOverwriteEnable (const NNSG2dRendererInstance * pRnd, NNSG2dRendererOverwriteParam flag)
 {
     return (BOOL)(pRnd->overwriteEnableFlag & flag);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dOptimizeRenderer (NNSG2dRendererInstance * pRend)
 {
 #pragma unused( pRend )

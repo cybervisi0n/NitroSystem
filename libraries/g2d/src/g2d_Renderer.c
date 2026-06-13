@@ -366,7 +366,11 @@ static void DrawCellAnimationImpl_ (const NNSG2dCellAnimation * pCellAnim)
         } else {
             DrawCellImpl_(pCell);
         }
+        #ifdef SDK_PORT
+        NNS_G2dPopMtx();
+        #else
         NNS_G2dPopMtx(1);
+        #endif
     }
 }
 
@@ -385,7 +389,11 @@ static void DrawNode_ (const NNSG2dNode * pNode)
         {
             DrawCellAnimationImpl_(pCellAnim);
         }
+        #ifdef SDK_PORT
+        NNS_G2dPopMtx();
+        #else
         NNS_G2dPopMtx(1);
+        #endif
     }
 }
 
@@ -401,7 +409,11 @@ static NNS_G2D_INLINE void DrawNode2_ (const NNSG2dMultiCellInstance * pMC, cons
     {
         DrawCellAnimationImpl_(&cellAnimArray[cellAnimIdx].cellAnim);
     }
+    #ifdef SDK_PORT
+    NNS_G2dPopMtx();
+    #else
     NNS_G2dPopMtx(1);
+    #endif
 }
 
 static NNS_G2D_INLINE BOOL IsAutoZoffsetEnable_ (void)
@@ -643,7 +655,11 @@ void NNS_G2dDrawMultiCellAnimation (const NNSG2dMultiCellAnimation * pMCAnim)
         NNS_G2dPushMtx();
         SetSrtControlToMtxStack_(&pMCAnim->srtCtrl);
         NNS_G2dDrawMultiCell(&pMCAnim->multiCellInstance);
+        #ifdef SDK_PORT
+        NNS_G2dPopMtx();
+        #else
         NNS_G2dPopMtx(1);
+        #endif
     }
 }
 

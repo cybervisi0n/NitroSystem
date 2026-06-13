@@ -32,18 +32,27 @@ static const u16 NNSI_G2D_NNSI_G2D_SIZE_OBJ_CHAR_TEXEL_S = 0x8;
 static const u16 NNSI_G2D_NNSI_G2D_SIZE_OBJ_CHAR_TEXEL_T = 0x8;
 static const u16 NNSI_G2D_SIZE_OBJ_CHAR = NNSI_G2D_NNSI_G2D_SIZE_OBJ_CHAR_TEXEL_S * NNSI_G2D_NNSI_G2D_SIZE_OBJ_CHAR_TEXEL_T;
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE fx32 NNSi_G2dGetOamSin (const NNSG2dOamAffineParams * pOamAff)
 {
     NNS_G2D_NULL_ASSERT(pOamAff);
     return (fx32)((u32)pOamAff->PB << 4);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE fx32 NNSi_G2dGetOamCos (const NNSG2dOamAffineParams * pOamAff)
 {
     NNS_G2D_NULL_ASSERT(pOamAff);
     return (fx32)((u32)pOamAff->PA << 4);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE s16 NNSi_G2dGetOamX (const GXOamAttr * oamAttr)
 {
     NNS_G2D_NULL_ASSERT(oamAttr);
@@ -53,6 +62,9 @@ NNS_G2D_INLINE s16 NNSi_G2dGetOamX (const GXOamAttr * oamAttr)
     }
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE s16 NNSi_G2dGetOamY (const GXOamAttr * oamAttr)
 {
     NNS_G2D_NULL_ASSERT(oamAttr);
@@ -62,6 +74,9 @@ NNS_G2D_INLINE s16 NNSi_G2dGetOamY (const GXOamAttr * oamAttr)
     }
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE s16 NNSi_G2dRepeatXinScreenArea (s16 srcX)
 {
     if (srcX > 0x0FF) {
@@ -70,6 +85,9 @@ NNS_G2D_INLINE s16 NNSi_G2dRepeatXinScreenArea (s16 srcX)
     return srcX;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE s16 NNSi_G2dRepeatYinScreenArea (s16 srcY)
 {
     if (srcY > 0xBF) {
@@ -78,45 +96,69 @@ NNS_G2D_INLINE s16 NNSi_G2dRepeatYinScreenArea (s16 srcY)
     return srcY;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNSi_G2dSetOamX (GXOamAttr * oamAttr, s16 x)
 {
     NNS_G2D_NULL_ASSERT(oamAttr);
     oamAttr->attr01 |= (GX_OAM_ATTR01_X_MASK & ((u32)x << GX_OAM_ATTR01_X_SHIFT));
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNSi_G2dSetOamY (GXOamAttr * oamAttr, s16 y)
 {
     NNS_G2D_NULL_ASSERT(oamAttr);
     oamAttr->attr01 |= (GX_OAM_ATTR01_Y_MASK & ((u32)y << GX_OAM_ATTR01_Y_SHIFT));
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE u16 NNSi_G2dGetOamName (const GXOamAttr * oamAttr)
 {
     NNS_G2D_NULL_ASSERT(oamAttr);
     return (u16)((GX_OAM_ATTR2_NAME_MASK & oamAttr->attr2) >> GX_OAM_ATTR2_NAME_SHIFT);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE u16 NNSi_G2dGetOamColorParam (const GXOamAttr * oamAttr)
 {
     NNS_G2D_NULL_ASSERT(oamAttr);
     return (u16)((GX_OAM_ATTR2_CPARAM_MASK & oamAttr->attr2) >> GX_OAM_ATTR2_CPARAM_SHIFT);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE BOOL NNSi_G2dGetOamFlipH (const GXOamAttr * oamAttr)
 {
     return (BOOL)(oamAttr->flipH);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE BOOL NNSi_G2dGetOamFlipV (const GXOamAttr * oamAttr)
 {
     return (BOOL)(oamAttr->flipV);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE u16 NNSi_G2dGetOamAffineIdx (const GXOamAttr * oamAttr)
 {
     return (u16)((GX_OAM_ATTR01_RS_MASK & oamAttr->attr01) >> GX_OAM_ATTR01_RS_SHIFT);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNSi_G2dSetInvisible (GXOamAttr * oamAttr)
 {
     NNS_G2D_NULL_ASSERT(oamAttr);
@@ -125,6 +167,9 @@ NNS_G2D_INLINE void NNSi_G2dSetInvisible (GXOamAttr * oamAttr)
     oamAttr->attr0 |= (0x2 << GX_OAM_ATTR01_RSENABLE_SHIFT);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE BOOL NNSi_G2dIsVisible (const GXOamAttr * pOam)
 {
     NNS_G2D_NULL_ASSERT(pOam);
@@ -136,11 +181,17 @@ static u16 NNSi_G2dGetTexelS (GXTexSizeS s)
     return (u16)(0x0001 << (0x3 + s));
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE u16 NNSi_G2dGetTexelT (GXTexSizeT t)
 {
     return (u16)(0x0001 << (0x3 + t));
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE u16 NNSi_G2dGetTextureBaseAddrOffs (u16 charIdx, GXTexSizeS sS, GXTexSizeT sT, u16 bytePerTexel)
 {
 #pragma unused (sS)
@@ -153,6 +204,9 @@ NNS_G2D_INLINE u16 NNSi_G2dGetTextureBaseAddrOffs (u16 charIdx, GXTexSizeS sS, G
     return retOffs;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE u16 NNSi_G2dGetTextureU (u16 charIdx, GXTexSizeS sS)
 {
     const int numCharPerS = NNSi_G2dGetTexelS(sS) / NNSI_G2D_NNSI_G2D_SIZE_OBJ_CHAR_TEXEL_S;
@@ -161,6 +215,9 @@ NNS_G2D_INLINE u16 NNSi_G2dGetTextureU (u16 charIdx, GXTexSizeS sS)
     return (u16)(U * NNSI_G2D_NNSI_G2D_SIZE_OBJ_CHAR_TEXEL_S);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE u16 NNSi_G2dGetTextureV (u16 charIdx, GXTexSizeS sS)
 {
     const int numCharPerS = NNSi_G2dGetTexelS(sS) / NNSI_G2D_NNSI_G2D_SIZE_OBJ_CHAR_TEXEL_S;
@@ -169,11 +226,17 @@ NNS_G2D_INLINE u16 NNSi_G2dGetTextureV (u16 charIdx, GXTexSizeS sS)
     return (u16)(V * NNSI_G2D_NNSI_G2D_SIZE_OBJ_CHAR_TEXEL_T);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE BOOL NNSi_G2dIsRSEnable (const GXOamAttr * pOam)
 {
     return ((pOam->attr01 & GX_OAM_ATTR01_RSENABLE_MASK) != 0) ? TRUE : FALSE;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE u16 NNSi_G2dGetAffineIdx (const GXOamAttr * pOam)
 {
     if (NNSi_G2dIsRSEnable(pOam)) {
@@ -184,6 +247,9 @@ NNS_G2D_INLINE u16 NNSi_G2dGetAffineIdx (const GXOamAttr * pOam)
     }
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dGetOamTransFx32 (const GXOamAttr * pOam, NNSG2dFVec2 * pRet)
 {
     NNS_G2D_NULL_ASSERT(pOam);
@@ -193,6 +259,9 @@ NNS_G2D_INLINE void NNS_G2dGetOamTransFx32 (const GXOamAttr * pOam, NNSG2dFVec2 
     pRet->y = (fx32)(NNS_G2dRepeatYinCellSpace(NNSi_G2dGetOamY(pOam)) * FX32_ONE);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNSi_G2dRemovePositionAdjustmentFromDoubleAffineOBJ (const GXOamAttr * pOam, NNSG2dFVec2 * pV)
 {
     NNS_G2D_NULL_ASSERT(pOam);
@@ -214,6 +283,9 @@ NNS_G2D_INLINE void NNSi_G2dRemovePositionAdjustmentFromDoubleAffineOBJ (const G
 #endif
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNSi_G2dAdjustDifferenceOfRotateOrientation (const GXOamAttr * pOam, const MtxFx22 * pM, NNSG2dFVec2 * pV, BOOL adjustDoubleAffine)
 {
     NNS_G2D_NULL_ASSERT(pOam);

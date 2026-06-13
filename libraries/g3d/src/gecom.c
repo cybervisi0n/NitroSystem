@@ -49,15 +49,29 @@ void NNS_G3dGeFlushBuffer (void)
 
     if (NNS_G3dGeBuffer &&
         NNS_G3dGeBuffer->idx > 0) {
+        #ifdef SDK_PORT
+        draw_msg_t * msg;
+        msg = malloc( sizeof( draw_msg_t ) );
+        msg->type = DRAW_CMD_G3_CMD_LIST;
+        u8 * cmdBuf = malloc( (NNS_G3dGeBuffer->idx << 2) );
+        memcpy(cmdBuf, NNS_G3dGeBuffer->data, NNS_G3dGeBuffer->idx << 2);
+        msg->data.ptr = cmdBuf;
+        msg->size = (NNS_G3dGeBuffer->idx << 2);
+        SIM_HandleG3Command( msg );
+        free( msg );
+        #else
         sendNB(&NNS_G3dGeBuffer->data[0], (void *)&reg_G3X_GXFIFO, NNS_G3dGeBuffer->idx << 2);
         NNS_G3dGeBuffer->idx = 0;
+        #endif
     }
 }
 
 void NNS_G3dGeWaitSendDL (void)
 {
+    #ifndef SDK_PORT
     while (NNS_G3dFlagGXDmaAsync)
         ;
+    #endif
 }
 
 BOOL NNS_G3dGeIsImmOK (void)
@@ -145,6 +159,19 @@ void NNS_G3dGeBufferOP_N (u32 op, const u32 * args, u32 num)
         }
     }
 
+    #ifdef SDK_PORT
+    draw_msg_t * msg;
+    msg = malloc( sizeof( draw_msg_t ) );
+    msg->type = DRAW_CMD_G3_CMD_LIST;
+    u8 * cmdBuf = malloc( (sizeof(u8) * num << 2) + sizeof(u32) );
+    *(u32*)cmdBuf = op;
+    memcpy(cmdBuf+4, args, num << 2);
+    msg->data.ptr = cmdBuf;
+    msg->size = (num << 2) + 4;
+    SIM_HandleG3Command( msg );
+    free( msg );
+    #else
     reg_G3X_GXFIFO = op;
     sendNB(args, (void *)&reg_G3X_GXFIFO, num << 2);
+    #endif
 }

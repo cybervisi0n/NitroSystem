@@ -6,7 +6,8 @@ libnnsmcs = library('nnsmcs',
     dependencies: nitrosdk_dep,
     include_directories: [nitrosystem_includes, libnnsmcs_includes],
     pic: false,
-    sources: libnnsmcs_srcs
+    sources: libnnsmcs_srcs,
+    native: build_target != 'arm'
 )
 
 nitrosystem_libs += libnnsmcs

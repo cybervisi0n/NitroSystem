@@ -53,21 +53,33 @@ typedef struct NNSG2dUserExDataBlock {
     u32 blkSize;
 } NNSG2dUserExDataBlock;
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE BOOL NNS_G2dIsPad16Valid (u16 pad16)
 {
     return (NNS_G2D_DUMMY_DATA16 == pad16) ? TRUE : FALSE;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE BOOL NNS_G2dIsPad32Valid (u32 pad32)
 {
     return (NNS_G2D_DUMMY_DATA32 == pad32) ? TRUE : FALSE;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE u16 NNS_G2dMakeVersionData (u8 majorVer, u8 minorVer)
 {
     return (u16)((u16)majorVer << 8 | ((u16)minorVer & 0x00FF));
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE const NNSG2dUserExDataBlock * NNSi_G2dGetUserExDataBlkByID (const void * pExtendData, u32 blkTypeID)
 {
     if (pExtendData != NULL) {

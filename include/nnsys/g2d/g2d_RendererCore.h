@@ -114,6 +114,9 @@ void NNS_G2dRndCoreDrawCellFast2D(const NNSG2dCellData * pCell);
 void NNS_G2dSetRndCoreCellCloneSource3D(const NNSG2dCellData * pCell);
 void NNS_G2dRndCoreDrawCellClone3D(const NNSG2dCellData * pCell);
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dInitRndCore2DMtxCache (NNSG2dRndCore2DMtxCache * pMtxCache)
 {
     MI_CpuFillFast(pMtxCache->affineIndex,
@@ -121,6 +124,9 @@ NNS_G2D_INLINE void NNS_G2dInitRndCore2DMtxCache (NNSG2dRndCore2DMtxCache * pMtx
                    sizeof(pMtxCache->affineIndex));
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNS_G2dSetRndCore2DMtxCacheMtxParams (NNSG2dRndCore2DMtxCache * pMtxCache, MtxFx22 * pM)
 {
     NNS_G2dInitRndCore2DMtxCache(pMtxCache);

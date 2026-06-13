@@ -4,7 +4,8 @@ libnnsg3d = library('nnsg3d',
     dependencies: nitrosdk_dep,
     include_directories: nitrosystem_includes,
     pic: false,
-    sources: libnnsg3d_srcs
+    sources: libnnsg3d_srcs,
+    native: build_target != 'arm'
 )
 
 nitrosystem_libs += libnnsg3d

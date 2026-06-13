@@ -13,8 +13,13 @@ extern "C" {
 BOOL NNS_G2dGetUnpackedPaletteData(void * pNclrFile, NNSG2dPaletteData ** ppPltData);
 BOOL NNS_G2dGetUnpackedPaletteCompressInfo(void * pNclrFile, NNSG2dPaletteCompressInfo ** ppPltCmpInfo);
 
+#ifdef SDK_PORT
+void * NNS_G2dUnpackNCL (NNSG2dPaletteData* pPlttData);
+void * NNSi_G2dUnpackNCLCmpInfo(NNSG2dPaletteCompressInfo* pPlttCmpData);
+#else
 void NNS_G2dUnpackNCL(NNSG2dPaletteData * pPlttData);
 void NNSi_G2dUnpackNCLCmpInfo(NNSG2dPaletteCompressInfo * pPlttCmpData);
+#endif
 
 #ifdef __SNC__
     NNS_G2D_DEBUG_FUNC_DECL_BEGIN void NNS_G2dPrintPaletteData (const NNSG2dPaletteData * p1) NNS_G2D_DEBUG_FUNC_DECL_END

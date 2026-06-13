@@ -315,7 +315,11 @@ void NNS_GfdResetFrmTexVramState (void)
     int i;
     u16 numSlot = frmExVramMan_.numSlot;
 
+    #ifdef SDK_PORT
+    const int numRegion = ( numSlot > 1 ) ? numSlot + 1 : numSlot + 0;
+    #else
     const numRegion = (numSlot > 1) ? numSlot + 1 : numSlot + 0;
+    #endif
 
     NNS_GFD_ASSERT(IsSlotNumValid_(numSlot));
 

@@ -256,6 +256,16 @@ static NNS_G2D_INLINE void SetTextureParamsFor3DDirect2DMap_ (const NNSG2dImageA
     NNS_G2D_NULL_ASSERT(pTexImageAttr);
     {
 
+        #ifdef SDK_PORT
+        G3_TexImageParam( pTexImageAttr->fmt,   
+                          GX_TEXGEN_TEXCOORD, 
+                          pTexImageAttr->sizeS,         
+                          pTexImageAttr->sizeT,         
+                          GX_TEXREPEAT_NONE,  
+                          GX_TEXFLIP_NONE,    
+                          pTexImageAttr->plttUse, 
+                          texBaseAddr );
+        #else
         reg_G3_TEXIMAGE_PARAM
             = GX_PACK_TEXIMAGE_PARAM(pTexImageAttr->fmt,
                                      GX_TEXGEN_TEXCOORD,
@@ -265,6 +275,7 @@ static NNS_G2D_INLINE void SetTextureParamsFor3DDirect2DMap_ (const NNSG2dImageA
                                      GX_TEXFLIP_NONE,
                                      pTexImageAttr->plttUse,
                                      texBaseAddr);
+        #endif
     }
 }
 

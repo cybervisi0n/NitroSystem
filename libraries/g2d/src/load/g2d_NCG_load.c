@@ -44,6 +44,61 @@ static const char * GetStrNNSG2dCharacterDataMappingType_ (GXOBJVRamModeChar typ
 }
 #endif
 
+#ifdef SDK_PORT
+#define NCG_DATA_OUT_MAX 256
+#define NCG_DATA_OUT_MAX_SIZE 1024
+static u8 curDataOut = 0;
+static NNSG2dCharacterData charDataOuts[NCG_DATA_OUT_MAX] = {0};
+
+static u8 curBGDataOut = 0;
+
+#define NCG_ALLOCATED_CHAR_DATA_MAX 4096
+typedef struct {
+    void * origAddr;
+    void * mallocAddr;
+} WIN_NCG_malloc_t;
+static WIN_NCG_malloc_t s_allocatedCharDataTbl[NCG_ALLOCATED_CHAR_DATA_MAX] = {0};
+
+static void WIN_FreeCharData(NNSG2dCharacterData * pCharData);
+static void WIN_RegisterCharData(NNSG2dCharacterData ** ppCharData );
+
+static void WIN_FreeCharData(NNSG2dCharacterData * pCharData)
+{
+    free(pCharData);
+    return;
+}
+
+static void WIN_RegisterCharData(NNSG2dCharacterData ** ppCharData )
+{
+    for(int i=0; i < NCG_ALLOCATED_CHAR_DATA_MAX; i++)
+    {
+        if(s_allocatedCharDataTbl[i].origAddr == NULL)
+        {
+            s_allocatedCharDataTbl[i].origAddr = ppCharData;
+            s_allocatedCharDataTbl[i].mallocAddr = *ppCharData;
+            break;
+        }
+    }
+}
+
+void WIN_CheckAndFreeCharData(void * start, void * end)
+{
+    u64 start64 = (u64)start;
+    u64 end64 = (u64)end;
+    for(int i=0; i < NCG_ALLOCATED_CHAR_DATA_MAX; i++)
+    {
+        if((u64)s_allocatedCharDataTbl[i].origAddr > start64 && (u64)s_allocatedCharDataTbl[i].origAddr < end64)
+        {
+            NNSG2dCharacterData * chrData = s_allocatedCharDataTbl[i].mallocAddr;
+            WIN_FreeCharData(chrData);
+            s_allocatedCharDataTbl[i].origAddr = NULL;
+            s_allocatedCharDataTbl[i].mallocAddr = NULL;
+            break;
+        }
+    }
+}
+#endif
+
 BOOL NNS_G2dGetUnpackedCharacterData (void * pNcgrFile, NNSG2dCharacterData ** ppCharData)
 {
     NNS_G2D_NULL_ASSERT(pNcgrFile);
@@ -64,8 +119,13 @@ BOOL NNS_G2dGetUnpackedCharacterData (void * pNcgrFile, NNSG2dCharacterData ** p
                 (NNSG2dCharacterDataBlock *)NNS_G2dFindBinaryBlock(pBinFile,
                                                                    NNS_G2D_BINBLK_SIG_CHARACTERDATA);
             if (pBinBlk) {
+                #ifdef SDK_PORT
+                *ppCharData = NNS_G2dUnpackNCG( (void*)&pBinBlk->characterData );
+                WIN_RegisterCharData(ppCharData);
+                #else
                 NNS_G2dUnpackNCG((void *)&pBinBlk->characterData);
                 *ppCharData = &pBinBlk->characterData;
+                #endif
                 return TRUE;
             } else {
                 *ppCharData = NULL;
@@ -75,9 +135,30 @@ BOOL NNS_G2dGetUnpackedCharacterData (void * pNcgrFile, NNSG2dCharacterData ** p
     }
 }
 
+#ifdef SDK_PORT
+NNSG2dCharacterData * NNS_G2dUnpackNCG(NNSG2dCharacterData * pCharData)
+#else
 void NNS_G2dUnpackNCG (NNSG2dCharacterData * pCharData)
+#endif
 {
     NNS_G2D_NULL_ASSERT(pCharData);
+
+    #ifdef SDK_PORT
+    NNSG2dCharacterData * pCharDataOut;
+    WIN_NNSG2dCharacterData * pCharDataWin;
+    pCharDataWin = (WIN_NNSG2dCharacterData *)pCharData;
+    pCharDataOut = malloc(sizeof(NNSG2dCharacterData));
+
+    pCharDataOut->H = pCharDataWin->H;
+    pCharDataOut->W = pCharDataWin->W;
+    pCharDataOut->pixelFmt = pCharDataWin->pixelFmt;
+    pCharDataOut->mappingType = pCharDataWin->mappingType;
+    pCharDataOut->characterFmt = pCharDataWin->characterFmt;
+    pCharDataOut->szByte = pCharDataWin->szByte;
+    pCharDataOut->pRawData = (void *)((u64)pCharData + pCharDataWin->pRawData);
+
+    return pCharDataOut;
+    #else
 
     pCharData->pRawData = NNS_G2D_UNPACK_OFFSET_PTR(pCharData->pRawData, pCharData);
 
@@ -93,6 +174,7 @@ void NNS_G2dUnpackNCG (NNSG2dCharacterData * pCharData)
                            pCharData->W == 16)
                           , "Invalid OBJ character data size for 2D mapping mode.");
     }
+    #endif
 
     NNSI_G2D_DEBUGMSG0("Unpacking NCGR file is successful.\n");
 }
@@ -117,8 +199,13 @@ BOOL NNS_G2dGetUnpackedBGCharacterData (void * pNcgrFile, NNSG2dCharacterData **
                 (NNSG2dCharacterDataBlock *)NNS_G2dFindBinaryBlock(pBinFile,
                                                                    NNS_G2D_BINBLK_SIG_CHARACTERDATA);
             if (pBinBlk) {
+                #ifdef SDK_PORT
+                *ppCharData = NNS_G2dUnpackBGNCG( (void*)&pBinBlk->characterData );
+                WIN_RegisterCharData(ppCharData);
+                #else
                 NNS_G2dUnpackBGNCG((void *)&pBinBlk->characterData);
                 *ppCharData = &pBinBlk->characterData;
+                #endif
                 return TRUE;
             } else {
                 *ppCharData = NULL;
@@ -158,15 +245,42 @@ BOOL NNS_G2dGetUnpackedCharacterPosInfo (void * pNcgrFile, NNSG2dCharacterPosInf
     }
 }
 
+#ifdef SDK_PORT
+NNSG2dCharacterData * NNS_G2dUnpackBGNCG(NNSG2dCharacterData * pCharData)
+#else
 void NNS_G2dUnpackBGNCG (NNSG2dCharacterData * pCharData)
+#endif
 {
     NNS_G2D_NULL_ASSERT(pCharData);
+
+    #ifdef SDK_PORT
+    NNSG2dCharacterData * pCharDataOut;
+    WIN_NNSG2dCharacterData * pCharDataWin;
+    pCharDataWin = (WIN_NNSG2dCharacterData *)pCharData;
+    pCharDataOut = malloc( sizeof(NNSG2dCharacterData) );
+    curDataOut++;
+    if( curDataOut >= NCG_DATA_OUT_MAX )
+    {
+        curDataOut = 0;
+    }
+
+    pCharDataOut->H = pCharDataWin->H;
+    pCharDataOut->W = pCharDataWin->W;
+    pCharDataOut->pixelFmt = pCharDataWin->pixelFmt;
+    pCharDataOut->mappingType = pCharDataWin->mappingType;
+    pCharDataOut->characterFmt = pCharDataWin->characterFmt;
+    pCharDataOut->szByte = pCharDataWin->szByte;
+    pCharDataOut->pRawData = (void *)((u64)pCharData + pCharDataWin->pRawData);
+
+    return pCharDataOut;
+    #else
 
     pCharData->pRawData = NNS_G2D_UNPACK_OFFSET_PTR(pCharData->pRawData, pCharData);
 
     NNS_G2D_MINMAX_ASSERT(pCharData->pixelFmt, GX_TEXFMT_PLTT16, GX_TEXFMT_PLTT256);
     NNS_G2D_MINMAX_ASSERT(pCharData->mappingType, GX_OBJVRAMMODE_CHAR_2D, GX_OBJVRAMMODE_CHAR_1D_256K);
     NNS_G2D_ASSERT(NNSi_G2dGetCharacterFmtType(pCharData->characterFmt) == NNS_G2D_CHARACTER_FMT_CHAR);
+    #endif
 
     NNSI_G2D_DEBUGMSG0("Unpacking NCGR file is successful.\n");
 }

@@ -5,6 +5,9 @@
 extern "C" {
 #endif
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGlbLookAt (const VecFx32 * camPos, const VecFx32 * camUp, const VecFx32 * target)
 {
     NNS_G3dGlb.camPos = *camPos;
@@ -18,6 +21,9 @@ NNS_G3D_INLINE void NNS_G3dGlbLookAt (const VecFx32 * camPos, const VecFx32 * ca
 
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGlbFrustum (fx32 t, fx32 b, fx32 l, fx32 r, fx32 n, fx32 f)
 {
     MTX_Frustum(t,
@@ -32,6 +38,9 @@ NNS_G3D_INLINE void NNS_G3dGlbFrustum (fx32 t, fx32 b, fx32 l, fx32 r, fx32 n, f
                          NNS_G3D_GLB_FLAG_INVCAMERAPROJ_UPTODATE);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGlbFrustumW (fx32 t, fx32 b, fx32 l, fx32 r, fx32 n, fx32 f, fx32 scaleW)
 {
     MTX_FrustumW(t,
@@ -46,6 +55,9 @@ NNS_G3D_INLINE void NNS_G3dGlbFrustumW (fx32 t, fx32 b, fx32 l, fx32 r, fx32 n, 
                          NNS_G3D_GLB_FLAG_INVCAMERAPROJ_UPTODATE);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGlbPerspective (fx32 fovySin, fx32 fovyCos, fx32 aspect, fx32 n, fx32 f)
 {
     MTX_Perspective(fovySin,
@@ -58,6 +70,9 @@ NNS_G3D_INLINE void NNS_G3dGlbPerspective (fx32 fovySin, fx32 fovyCos, fx32 aspe
                          NNS_G3D_GLB_FLAG_INVCAMERAPROJ_UPTODATE);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGlbPerspectiveW (fx32 fovySin, fx32 fovyCos, fx32 aspect, fx32 n, fx32 f, fx32 scaleW)
 {
     MTX_PerspectiveW(fovySin,
@@ -71,6 +86,9 @@ NNS_G3D_INLINE void NNS_G3dGlbPerspectiveW (fx32 fovySin, fx32 fovyCos, fx32 asp
                          NNS_G3D_GLB_FLAG_INVCAMERAPROJ_UPTODATE);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGlbOrtho (fx32 t, fx32 b, fx32 l, fx32 r, fx32 n, fx32 f)
 {
     MTX_Ortho(t,
@@ -84,6 +102,9 @@ NNS_G3D_INLINE void NNS_G3dGlbOrtho (fx32 t, fx32 b, fx32 l, fx32 r, fx32 n, fx3
                          NNS_G3D_GLB_FLAG_INVCAMERAPROJ_UPTODATE);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGlbOrthoW (fx32 t, fx32 b, fx32 l, fx32 r, fx32 n, fx32 f, fx32 scaleW)
 {
     MTX_OrthoW(t,
@@ -98,6 +119,9 @@ NNS_G3D_INLINE void NNS_G3dGlbOrthoW (fx32 t, fx32 b, fx32 l, fx32 r, fx32 n, fx
                          NNS_G3D_GLB_FLAG_INVCAMERAPROJ_UPTODATE);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGlbSetProjectionMtx (const MtxFx44 * m)
 {
     NNS_G3D_NULL_ASSERT(m);
@@ -106,6 +130,9 @@ NNS_G3D_INLINE void NNS_G3dGlbSetProjectionMtx (const MtxFx44 * m)
                          NNS_G3D_GLB_FLAG_INVCAMERAPROJ_UPTODATE);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGlbSetBaseRot (const MtxFx33 * pRot)
 {
     NNS_G3D_NULL_ASSERT(pRot);
@@ -116,6 +143,9 @@ NNS_G3D_INLINE void NNS_G3dGlbSetBaseRot (const MtxFx33 * pRot)
                          NNS_G3D_GLB_FLAG_INVBASECAMERA_UPTODATE);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGlbSetViewPort (int x1, int y1, int x2, int y2)
 {
     GX_VIEWPORT_ASSERT(x1, y1, x2, y2);
@@ -123,66 +153,105 @@ NNS_G3D_INLINE void NNS_G3dGlbSetViewPort (int x1, int y1, int x2, int y2)
     NNS_G3dGlb.prmViewPort = GX_PACK_VIEWPORT_PARAM(x1, y1, x2, y2);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE const MtxFx43 * NNS_G3dGlbGetCameraMtx (void)
 {
     return &NNS_G3dGlb.cameraMtx;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE const MtxFx44 * NNS_G3dGlbGetProjectionMtx (void)
 {
     return &NNS_G3dGlb.projMtx;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE const MtxFx33 * NNS_G3dGlbGetBaseRot (void)
 {
     return &NNS_G3dGlb.prmBaseRot;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE const VecFx32 * NNS_G3dGlbGetBaseScale (void)
 {
     return &NNS_G3dGlb.prmBaseScale;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE const VecFx32 * NNS_G3dGlbGetBaseTrans (void)
 {
     return &NNS_G3dGlb.prmBaseTrans;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE const VecFx32 * NNS_G3dGlbGetCameraPos (void)
 {
     return &NNS_G3dGlb.camPos;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE const VecFx32 * NNS_G3dGlbGetCameraUp (void)
 {
     return &NNS_G3dGlb.camUp;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE const VecFx32 * NNS_G3dGlbGetCameraTarget (void)
 {
     return &NNS_G3dGlb.camTarget;
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGlbFlush (void)
 {
     NNS_G3dGlbFlushP();
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE void NNS_G3dGlbFlushAlt (void)
 {
     NNS_G3dGlbFlushWVP();
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE const MtxFx43 * NNS_G3dGlbGetInvCameraMtx (void)
 {
     return NNS_G3dGlbGetInvV();
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE const MtxFx43 * NNS_G3dGlbGetSrtCameraMtx (void)
 {
     return NNS_G3dGlbGetWV();
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G3D_INLINE const MtxFx43 * NNS_G3dGlbGetInvSrtCameraMtx (void)
 {
     return NNS_G3dGlbGetInvWV();

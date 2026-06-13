@@ -39,44 +39,68 @@ NNSG2dCellTransferState * NNSi_G2dGetCellTransferState(u32 handle);
 
 void NNSi_G2dInitCellTransferState(u32 handle, u32 dstAddr3D, u32 dstAddr2DMain, u32 dstAddr2DSub, u32 szDst, const void * pSrcNCGR, const void * pSrcNCBR, u32 szSrcData);
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNSi_G2dSetCellTransferStateRequestFlag (NNSG2dCellTransferState * pState, NNS_G2D_VRAM_TYPE type, BOOL flag)
 {
     pState->bTransferRequested = (pState->bTransferRequested & ~(0x1 << type)) | (flag << type);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNSi_G2dSetVramTransferRequestFlag (u32 handle, NNS_G2D_VRAM_TYPE type, BOOL flag)
 {
     NNSG2dCellTransferState * pState = NNSi_G2dGetCellTransferState(handle);
     NNSi_G2dSetCellTransferStateRequestFlag(pState, type, flag);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE BOOL NNSi_G2dGetCellTransferStateRequestFlag (const NNSG2dCellTransferState * pState, NNS_G2D_VRAM_TYPE type)
 {
     return (BOOL)(pState->bTransferRequested & (0x1 << type));
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE BOOL NNSi_G2dGetVramTransferRequestFlag (u32 handle, NNS_G2D_VRAM_TYPE type)
 {
     const NNSG2dCellTransferState * pState = NNSi_G2dGetCellTransferState(handle);
     return NNSi_G2dGetCellTransferStateRequestFlag(pState, type);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNSi_G2dSetCellTransferStateCellDrawnFlag (NNSG2dCellTransferState * pState, NNS_G2D_VRAM_TYPE type, BOOL flag)
 {
     pState->bDrawn = (pState->bDrawn & ~(0x1 << type)) | (flag << type);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE void NNSi_G2dSetVramTransferCellDrawnFlag (u32 handle, NNS_G2D_VRAM_TYPE type, BOOL flag)
 {
     NNSG2dCellTransferState * pState = NNSi_G2dGetCellTransferState(handle);
     NNSi_G2dSetCellTransferStateCellDrawnFlag(pState, type, flag);
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE BOOL NNSi_G2dGetCellTransferStateCellDrawnFlag (const NNSG2dCellTransferState * pState, NNS_G2D_VRAM_TYPE type)
 {
     return (BOOL)(pState->bDrawn & (0x1 << type));
 }
 
+#ifdef SDK_PORT
+static
+#endif
 NNS_G2D_INLINE BOOL NNSi_G2dGetVramTransferCellDrawnFlag (u32 handle, NNS_G2D_VRAM_TYPE type)
 {
     const NNSG2dCellTransferState * pState = NNSi_G2dGetCellTransferState(handle);
