@@ -44,17 +44,10 @@ if mwrap_sdk != 'default' and build_target == 'arm'
     c_args += ['-wrap:sdk', mwrap_sdk]
 endif
 
-if (build_target == 'arm')
 add_project_arguments(c_args,
     language: 'c',
-    native: false
+    native: (build_target == 'linux' or build_target == 'win64')
 )
-else
-add_project_arguments(c_args,
-    language: 'c',
-    native: true
-)
-endif
 
 nitrosystem_args = [
     '-DSDK_CW_FORCE_EXPORT_SUPPORT',
@@ -95,17 +88,10 @@ if (build_target == 'linux')
     ]
 endif
 
-if (build_target == 'arm')
 add_project_arguments(nitrosystem_args,
     language: 'c',
-    native: false
+    native: (build_target == 'linux' or build_target == 'win64')
 )
-else
-add_project_arguments(nitrosystem_args,
-    language: 'c',
-    native: true
-)
-endif
 
 ############################################################
 ###                    INCLUDE PATHS                     ###
